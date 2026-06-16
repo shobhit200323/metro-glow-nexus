@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DMRC Blue Line | Trip Finder</title>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div style="position:fixed;top:0;left:0;right:0;height:4px;background:#1E64C8;z-index:9999;pointer-events:none"></div>
+    <div class="main-bg">
+        <div class="bg-grid"></div>
+        <div class="floating-orbs">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+    </div>
+    
+    <!-- POPUP MODAL -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-modal">
+            <div class="popup-icon">⚠️</div>
+            <div class="popup-title">Notice</div>
+            <div class="popup-message" id="popupMessageText"></div>
+            <button class="popup-btn" onclick="closePopup()">UNDERSTOOD</button>
+        </div>
+    </div>
+    
+    <header class="jarvis-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-area"><span class="logo-icon">🚇</span></div>
+                <div class="header-text">
+                    <h1><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1E64C8;vertical-align:middle;margin-right:8px;"></span>DMRC LINE 3/4 TRIP FINDER</h1>
+                    <div class="subtitle">DWARKA & YB Crew Control</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div id="loggedInUserHeader" class="logged-in-user">
+                    <span class="user-icon">👤</span>
+                    <div class="user-info">
+                        <div class="user-name" id="headerUserName">-</div>
+                        <div class="user-id">ID: <span id="headerUserId">-</span></div>
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                </div>
+                <div>
+                    <div class="current-date" id="currentDate"></div>
+                    <div class="current-day" id="currentDay"></div>
+                </div>
+                <a href="../main.html" style="position:absolute;left:20px;bottom:-28px;font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;font-family:'Syncopate';letter-spacing:1px;">← Portal Home</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="status-bar">⚡ SYSTEM ONLINE • SAFETY FIRST • SERVICE ALWAYS • DWARKA & YB CREW CONTROL ⚡</div>
+    
+    <div class="main-wrapper">
+        <div style="position:fixed;bottom:25px;left:25px;padding:10px 20px;font-size:13px;color:rgba(255,255,255,0.15);font-family:Arial,sans-serif;font-weight:bold;letter-spacing:2px;pointer-events:none;z-index:40;text-transform:uppercase;">
+            Hosted by DMM
+        </div>
+        <div id="minimalLoginTrigger" style="position:fixed;bottom:20px;right:20px;padding:8px 14px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,212,255,0.3);border-radius:20px;cursor:pointer;z-index:50;font-size:11px;color:rgba(0,212,255,0.7);font-family:'Syncopate';letter-spacing:1px;" title="Staff Login">
+            <span id="minimalLoginText">👤 LOGIN</span>
+        </div>
+        
+        <div id="loginModal" class="login-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:1000;justify-content:center;align-items:center;">
+            <div class="glass-card" style="max-width:350px;width:90%;position:relative;">
+                <button onclick="toggleLoginModal()" style="position:absolute;top:10px;right:10px;background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;">✕</button>
+                <div style="text-align:center;margin-bottom:20px;">
+                    <h3 style="font-family:'Syncopate';color:var(--cyan);font-size:16px;">STAFF LOGIN</h3>
+                </div>
+                <div id="loginError" class="login-error" style="display:none;background:rgba(239,68,68,0.2);border:1px solid var(--red);border-radius:6px;padding:8px;margin-bottom:12px;text-align:center;color:var(--red);font-size:12px;"></div>
+                <div class="input-group">
+                    <input type="text" id="loginEmpId" class="jarvis-input" placeholder="Emp ID" style="text-transform:uppercase;text-align:center;" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <div style="position:relative;">
+                        <input type="password" id="loginPassword" class="jarvis-input" placeholder="Password" style="text-align:center;" autocomplete="current-password">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,0.5);padding:4px;">👁️</button>
+                    </div>
+                </div>
+                <button class="jarvis-btn btn-primary" onclick="handleLogin()" style="width:100%;">LOGIN</button>
+                <div style="margin-top:15px;text-align:center;">
+                    <a onclick="toggleRegisterModal()" style="color:var(--cyan);font-size:11px;cursor:pointer;text-decoration:underline;">New Staff? Register</a>
+                </div>
+            </div>
+        </div>
+        
+        <div id="registerModal" class="login-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:1000;justify-content:center;align-items:center;">
+            <div class="glass-card" style="max-width:380px;width:90%;position:relative;max-height:90vh;overflow-y:auto;">
+                <button onclick="toggleRegisterModal()" style="position:absolute;top:10px;right:10px;background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;">✕</button>
+                <div style="text-align:center;margin-bottom:15px;">
+                    <h3 style="font-family:'Syncopate';color:var(--cyan);font-size:16px;">STAFF REGISTRATION</h3>
+                </div>
+                <div id="registerError" class="login-error" style="display:none;background:rgba(239,68,68,0.2);border:1px solid var(--red);border-radius:6px;padding:8px;margin-bottom:12px;text-align:center;color:var(--red);font-size:12px;"></div>
+                <div id="registerSuccess" class="login-error" style="display:none;background:rgba(34,197,94,0.2);border:1px solid var(--green);border-radius:6px;padding:8px;margin-bottom:12px;text-align:center;color:var(--green);font-size:12px;"></div>
+                <div class="input-group">
+                    <input type="text" id="regName" class="jarvis-input" placeholder="Full Name">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="regEmpId" class="jarvis-input" placeholder="Emp ID" style="text-transform:uppercase;">
+                </div>
+                <div class="input-group">
+                    <div style="position:relative;">
+                        <input type="password" id="regAccessCode" class="jarvis-input" placeholder="Access Code">
+                        <button type="button" onclick="togglePasswordVisibility('regAccessCode',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,0.5);padding:4px;">👁️</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div style="position:relative;">
+                        <input type="password" id="regPassword" class="jarvis-input" placeholder="Create Password">
+                        <button type="button" onclick="togglePasswordVisibility('regPassword',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,0.5);padding:4px;">👁️</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div style="position:relative;">
+                        <input type="password" id="regConfirmPassword" class="jarvis-input" placeholder="Confirm Password">
+                        <button type="button" onclick="togglePasswordVisibility('regConfirmPassword',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,0.5);padding:4px;">👁️</button>
+                    </div>
+                </div>
+                <button class="jarvis-btn btn-primary" onclick="handleRegister()" style="width:100%;">REGISTER</button>
+            </div>
+        </div>
+        
+        <div id="pageLogin" class="page"></div>
+        <div id="pageRegister" class="page"></div>
+        
+        <div id="pageHome" class="page active">
+            <div id="userMsgBanner" class="user-msg-banner" style="display:none;">
+                <span class="msg-icon">📢</span>
+                <span class="msg-text" id="userMsgText"></span>
+            </div>
+            <div class="glass-card cinematic-enter">
+                <h2 class="card-title"><span class="highlight">Duty</span> Finder</h2>
+                <div class="input-group">
+                    <label class="input-label">Select Day Type</label>
+                    <select id="daySelect" class="jarvis-select">
+                        <option value="Weekday">Weekday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                        <option value="Special">Special</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Enter Duty Number</label>
+                    <input type="number" id="dutyInputHome" class="jarvis-input" placeholder="E.g. 101, 205, 308..." inputmode="numeric">
+                </div>
+                <button class="jarvis-btn btn-primary" onclick="fetchDuty('home')">🔍 ACCESS DUTY DATA</button>
+            </div>
+            <div id="kmAnalysisBtn" style="text-align:center;margin-top:8px;">
+                <a href="#" onclick="showKmAnalysis();return false;" class="tetra-home-link">📊 KM Data</a>
+            </div>
+        </div>
+        
+        <div id="pageResult" class="page">
+            <div class="quick-search">
+                <input type="number" id="dutyInputQuick" placeholder="Quick Search..." inputmode="numeric">
+                <button onclick="fetchDuty('quick')">SEARCH</button>
+            </div>
+            <div id="kmSelector"></div>
+            <div id="resultContent"></div>
+            <button class="jarvis-btn btn-back" onclick="showPage('pageHome')" style="margin-top:15px;">← RETURN HOME</button>
+        </div>
+
+        <div id="pageAdmin" class="page">
+            <div class="glass-card" style="padding: 20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid rgba(0,212,255,0.2);">
+                    <h2 class="card-title" style="font-size: 16px;margin:0;">⚙️ <span class="highlight">Admin</span> Console</h2>
+                    <div style="text-align:right;">
+                        <div id="adminUserInfo" style="font-size:11px;color:var(--cyan);">Logged: <span id="adminLoggedEmpId">-</span></div>
+                        <div id="adminUserLevel" style="font-size:10px;color:var(--orange);">Access: <span id="adminLoggedLevel">-</span></div>
+                    </div>
+                </div>
+                
+                <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;border-bottom:2px solid rgba(0,212,255,0.3);padding-bottom:10px;">
+                    <button class="jarvis-btn btn-sm admin-only-tab" id="tabMessages" onclick="switchAdminTab('messages')" style="background:linear-gradient(135deg,var(--orange),#cc5500);">📢 Messages</button>
+                    <button class="jarvis-btn btn-sm admin-only-tab" id="tabUpload" onclick="switchAdminTab('upload')" style="background:linear-gradient(135deg,var(--cyan),#0099cc);">📤 Data Upload</button>
+                    <button class="jarvis-btn btn-sm" id="tabChart" onclick="switchAdminTab('chart')" style="background:linear-gradient(135deg,var(--purple),#7c3aed);">📊 Chart</button>
+                    <button class="jarvis-btn btn-sm" id="tabKm" onclick="switchAdminTab('km')" style="background:linear-gradient(135deg,var(--green),#15803d);">🛣️ KM Analysis</button>
+                    <button class="jarvis-btn btn-sm admin-only-tab" id="tabUsers" onclick="switchAdminTab('users')" style="background:linear-gradient(135deg,var(--red),#991b1b);display:none;">👥 Users</button>
+                </div>
+                
+                <!-- Tab: Messages -->
+                <div id="adminTabMessages" class="admin-tab-content">
+                    <div class="section-header orange">
+                        <div class="section-icon">📢</div>
+                        <div class="section-title">User Messages</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Important Message (Displayed on home page)</label>
+                        <div style="display:flex;gap:10px;">
+                            <input type="text" id="userMsgInput" class="jarvis-input" placeholder="Type important message here..." style="flex:1;">
+                            <button class="jarvis-btn btn-purple btn-sm" onclick="saveUserMsg()">💾 SAVE</button>
+                            <button class="jarvis-btn btn-red btn-sm" onclick="clearUserMsg()">✕ CLEAR</button>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label class="input-label">Popup Message (Shown once on page load)</label>
+                        <div style="display:flex;gap:10px;">
+                            <input type="text" id="popupMsgInput" class="jarvis-input" placeholder="Type popup message here..." style="flex:1;">
+                            <button class="jarvis-btn btn-purple btn-sm" onclick="savePopupMsg()">💾 SAVE</button>
+                            <button class="jarvis-btn btn-red btn-sm" onclick="clearPopupMsg()">✕ CLEAR</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:25px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <h4 style="color:var(--green);font-size:13px;margin:0;">📊 Visitor Stats</h4>
+                            <div style="display:flex;gap:8px;">
+                                <button class="jarvis-btn btn-sm" onclick="loadVisitorStats()" style="font-size:10px;padding:6px 12px;">🔄 REFRESH</button>
+                                <button class="jarvis-btn btn-sm" onclick="downloadVisitorLog()" style="font-size:10px;padding:6px 12px;">📥 EXPORT</button>
+                                <button class="jarvis-btn btn-sm" onclick="clearVisitorLog()" style="background:rgba(239,68,68,0.3);border:1px solid var(--red);color:var(--red);font-size:10px;padding:6px 12px;">🗑️ CLEAR</button>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;">
+                            <div style="background:rgba(0,212,255,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(0,212,255,0.3);">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.6);">TOTAL</div>
+                                <div id="visitTotal" style="font-size:18px;color:var(--cyan);font-weight:bold;">-</div>
+                            </div>
+                            <div style="background:rgba(34,197,94,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(34,197,94,0.3);">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.6);">ORGANIC</div>
+                                <div id="visitOrganic" style="font-size:18px;color:var(--green);font-weight:bold;">-</div>
+                            </div>
+                            <div style="background:rgba(168,85,247,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(168,85,247,0.3);">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.6);">LOGGED IN</div>
+                                <div id="visitLoggedIn" style="font-size:18px;color:var(--purple);font-weight:bold;">-</div>
+                            </div>
+                            <div style="background:rgba(255,107,53,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(255,107,53,0.3);">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.6);">TODAY</div>
+                                <div id="visitToday" style="font-size:18px;color:var(--orange);font-weight:bold;">-</div>
+                            </div>
+                            <div style="background:rgba(239,68,68,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(239,68,68,0.3);">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.6);">THIS WEEK</div>
+                                <div id="visitWeek" style="font-size:18px;color:var(--red);font-weight:bold;">-</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Visitor Trend Chart (collapsible) -->
+                        <div style="margin-top:15px;">
+                            <div onclick="toggleVisitorChart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,150,200,0.1));border-radius:8px;border-left:4px solid var(--cyan);">
+                                <span style="font-size:14px;">📈</span>
+                                <span style="font-family:'Syncopate';font-size:10px;text-transform:uppercase;letter-spacing:1px;flex:1;color:var(--cyan);">Visitor Trend</span>
+                                <span id="visitorChartArrow" style="font-size:8px;color:rgba(255,255,255,0.4);">▶</span>
+                            </div>
+                            <div id="visitorChartBody" style="display:none;padding:12px;background:rgba(0,0,0,0.2);border-radius:0 0 8px 8px;border:1px solid rgba(0,212,255,0.1);border-top:none;">
+                                <canvas id="visitorChart" style="width:100%;height:250px;"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Hour of Day (collapsible) -->
+                        <div style="margin-top:10px;">
+                            <div onclick="toggleHourChart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(135deg,rgba(255,107,53,0.2),rgba(200,80,30,0.1));border-radius:8px;border-left:4px solid var(--orange);">
+                                <span style="font-size:14px;">⏰</span>
+                                <span style="font-family:'Syncopate';font-size:10px;text-transform:uppercase;letter-spacing:1px;flex:1;color:var(--orange);">By Hour of Day</span>
+                                <span id="hourChartArrow" style="font-size:8px;color:rgba(255,255,255,0.4);">▶</span>
+                            </div>
+                            <div id="hourChartBody" style="display:none;padding:12px;background:rgba(0,0,0,0.2);border-radius:0 0 8px 8px;border:1px solid rgba(255,107,53,0.1);border-top:none;">
+                                <canvas id="hourChart" style="width:100%;height:250px;"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Page Popularity (collapsible) -->
+                        <div style="margin-top:10px;">
+                            <div onclick="togglePageChart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(100,50,200,0.1));border-radius:8px;border-left:4px solid var(--purple);">
+                                <span style="font-size:14px;">📄</span>
+                                <span style="font-family:'Syncopate';font-size:10px;text-transform:uppercase;letter-spacing:1px;flex:1;color:var(--purple);">Page Popularity</span>
+                                <span id="pageChartArrow" style="font-size:8px;color:rgba(255,255,255,0.4);">▶</span>
+                            </div>
+                            <div id="pageChartBody" style="display:none;padding:12px;background:rgba(0,0,0,0.2);border-radius:0 0 8px 8px;border:1px solid rgba(168,85,247,0.1);border-top:none;">
+                                <canvas id="pageChart" style="width:100%;height:250px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:25px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <h4 style="color:var(--green);font-size:13px;margin:0;">📋 Message Activity Log</h4>
+                            <button id="clearMsgLogBtn" class="jarvis-btn btn-sm" onclick="clearMessageLog()" style="background:rgba(239,68,68,0.3);border:1px solid var(--red);color:var(--red);font-size:10px;padding:6px 12px;">🗑️ CLEAR LOG</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table" style="font-size:11px;">
+                                <thead><tr><th>Timestamp</th><th>Emp ID</th><th>Name</th><th>Action</th><th>Message</th></tr></thead>
+                                <tbody id="messageLogBody"><tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.4);">No message activity logged yet</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Tab: Data Upload -->
+                <div id="adminTabUpload" class="admin-tab-content" style="display:none;">
+                    <div class="section-header">
+                        <div class="section-icon">📤</div>
+                        <div class="section-title">Data Upload</div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" style="font-size:11px; min-width:500px;">
+                            <tr><th>Day</th><th>WEF</th><th>Remarks</th><th>File</th><th></th></tr>
+                            <tr>
+                                <td>Weekday</td>
+                                <td><input type="text" id="wef_Weekday" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="text" id="rem_Weekday" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="file" id="f_Weekday" accept=".csv" style="font-size:9px;"></td>
+                                <td><button onclick="clearData('Weekday')" style="background:#ef4444;color:#fff;border:none;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:9px;">CLR</button></td>
+                            </tr>
+                            <tr>
+                                <td>Saturday</td>
+                                <td><input type="text" id="wef_Saturday" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="text" id="rem_Saturday" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="file" id="f_Saturday" accept=".csv" style="font-size:9px;"></td>
+                                <td><button onclick="clearData('Saturday')" style="background:#ef4444;color:#fff;border:none;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:9px;">CLR</button></td>
+                            </tr>
+                            <tr>
+                                <td>Sunday</td>
+                                <td><input type="text" id="wef_Sunday" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="text" id="rem_Sunday" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="file" id="f_Sunday" accept=".csv" style="font-size:9px;"></td>
+                                <td><button onclick="clearData('Sunday')" style="background:#ef4444;color:#fff;border:none;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:9px;">CLR</button></td>
+                            </tr>
+                            <tr>
+                                <td>Special</td>
+                                <td><input type="text" id="wef_Special" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="text" id="rem_Special" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="file" id="f_Special" accept=".csv" style="font-size:9px;"></td>
+                                <td><button onclick="clearData('Special')" style="background:#ef4444;color:#fff;border:none;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:9px;">CLR</button></td>
+                            </tr>
+                            <tr class="admin-only-upload-row" style="display:none;">
+                                <td style="color:var(--orange);">Test</td>
+                                <td><input type="text" id="wef_Test" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,160,0,0.3);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="text" id="rem_Test" style="width:60px;padding:4px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,160,0,0.3);border-radius:4px;color:#fff;font-size:10px;"></td>
+                                <td><input type="file" id="f_Test" accept=".csv" style="font-size:9px;"></td>
+                                <td><button onclick="clearData('Test')" style="background:#ef4444;color:#fff;border:none;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:9px;">CLR</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.15);">
+                        <h4 style="color:var(--green);margin-bottom:10px;font-family:'Syncopate';font-size:11px;">📏 KM DISTANCE DATA</h4>
+                        <div style="background:rgba(0,0,0,0.3);padding:15px;border-radius:10px;">
+                            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:10px;">
+                                Routes loaded: <strong id="kmRouteCount" style="color:var(--cyan);">0</strong>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                                <button class="jarvis-btn btn-sm" onclick="downloadKmCsv()" style="background:linear-gradient(135deg,var(--cyan),#0099cc);padding:8px 14px;">📥 DOWNLOAD KM CSV</button>
+                                <input type="file" id="kmCsvFile" accept=".csv" style="font-size:11px;flex:1;min-width:150px;">
+                                <button class="jarvis-btn btn-sm btn-green" onclick="uploadKmCsv()" style="padding:8px 14px;">📤 UPLOAD</button>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <button class="jarvis-btn btn-sm" onclick="resetKmData()" style="padding:6px 12px;background:rgba(239,68,68,0.3);border:1px solid var(--red);color:var(--red);font-size:10px;">🔄 RESET TO DEFAULTS</button>
+                            </div>
+                            <details class="help-box" style="margin-top:8px;">
+                                <summary style="font-size:10px;color:var(--cyan);cursor:pointer;font-family:'Syncopate';letter-spacing:1px;">ℹ️ CSV Format Help</summary>
+                                <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,0.6);line-height:1.6;">
+                                Use <strong>Route,KM1,KM2,...</strong> format. Multiple KM columns let the user choose their route variant.
+                                <table style="width:100%;margin-top:6px;border-collapse:collapse;font-size:9px;font-family:monospace;">
+                                    <tr><th style="text-align:left;padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.2);color:var(--cyan);">Route</th><th style="text-align:right;padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.2);color:var(--cyan);">KM1</th><th style="text-align:right;padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.2);color:var(--cyan);">KM2</th></tr>
+                                    <tr><td style="padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">NFD|DW DN</td><td style="text-align:right;padding:4px 6px;">16</td><td style="text-align:right;padding:4px 6px;">26</td></tr>
+                                    <tr><td style="padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">DW UP|NFD</td><td style="text-align:right;padding:4px 6px;">18</td><td style="text-align:right;padding:4px 6px;">28</td></tr>
+                                    <tr><td style="padding:4px 6px;">YKA|NFD DN</td><td style="text-align:right;padding:4px 6px;">10</td><td style="text-align:right;padding:4px 6px;">20</td></tr>
+                                </table>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                    <button class="jarvis-btn btn-orange" onclick="processUploads()" style="font-size:11px; padding:12px;">💾 PUBLISH TRIP DATA</button>
+                </div>
+                
+                <!-- Tab: Chart -->
+                <div id="adminTabChart" class="admin-tab-content" style="display:none;">
+                    <div class="section-header purple">
+                        <div class="section-icon">📊</div>
+                        <div class="section-title">Running Time Chart</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Select Day Type</label>
+                        <select id="graphDay" class="jarvis-select">
+                            <option value="Weekday">Weekday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Special">Special</option>
+                            <option class="admin-only-day" style="display:none;" value="Test">Test</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Select Duty Series</label>
+                        <div class="series-grid" id="seriesGrid"></div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Custom Duties (comma-separated)</label>
+                        <input type="text" id="customDutiesGraph" class="jarvis-input" placeholder="e.g. 101, 205, 308">
+                    </div>
+                    <button class="jarvis-btn btn-purple" onclick="generateGraph()">📊 GENERATE CHART</button>
+                    <div id="graphWrapper" style="display:none;margin-top:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <h4 id="chartTitle" style="color:var(--cyan);margin:0;"></h4>
+                            <div style="display:flex;gap:8px;">
+                                <button class="jarvis-btn btn-sm" onclick="downloadChartPNG()">📥 PNG</button>
+                                <button class="jarvis-btn btn-sm btn-green" onclick="downloadChartExcel()">📊 EXCEL</button>
+                            </div>
+                        </div>
+                        <div id="avgDisplay" style="color:var(--orange);font-family:Syncopate;font-size:12px;margin-bottom:10px;"></div>
+                        <div id="chartParent" style="background:rgba(0,0,0,0.3);padding:15px;border-radius:12px;height:400px;overflow-x:auto;overflow-y:hidden;">
+                            <div id="chartInner" style="height:100%;">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab: KM Analysis -->
+                <div id="adminTabKm" class="admin-tab-content" style="display:none;">
+                    <div class="section-header orange">
+                        <div class="section-icon">🛣️</div>
+                        <div class="section-title">KM Analysis</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Select Day Type</label>
+                        <select id="kmDay" class="jarvis-select">
+                            <option value="Weekday">Weekday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Special">Special</option>
+                            <option class="admin-only-day" style="display:none;" value="Test">Test</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Select Series</label>
+                        <div class="series-grid orange" id="kmSeriesGrid"></div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Add Custom Duty Numbers (comma separated)</label>
+                        <input type="text" id="customDutiesKm" class="jarvis-input" placeholder="E.g. 101, 205, 308">
+                    </div>
+                    <button class="jarvis-btn btn-orange" onclick="generateKmReport()" style="font-size:11px; padding:12px;">🛣️ ANALYZE KM</button>
+                    <div id="kmWrapper" style="display:none; margin-top:20px;">
+                        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+                            <div style="background:rgba(0,212,255,0.15);padding:15px;border-radius:12px;text-align:center;border:1px solid rgba(0,212,255,0.3);"><h4 style="font-size:9px;color:rgba(255,255,255,0.6);margin-bottom:6px;">TOTAL DUTIES</h4><div id="kmDutyCount" style="font-family:'Syncopate';font-size:20px;color:var(--cyan);">0</div></div>
+                            <div style="background:rgba(255,107,53,0.15);padding:15px;border-radius:12px;text-align:center;border:1px solid rgba(255,107,53,0.3);"><h4 style="font-size:9px;color:rgba(255,255,255,0.6);margin-bottom:6px;">TOTAL KM</h4><div id="kmTotal" style="font-family:'Syncopate';font-size:20px;color:var(--orange);">0 km</div></div>
+                            <div style="background:rgba(168,85,247,0.15);padding:15px;border-radius:12px;text-align:center;border:1px solid rgba(168,85,247,0.3);"><h4 style="font-size:9px;color:rgba(255,255,255,0.6);margin-bottom:6px;">AVG KM</h4><div id="kmAvg" style="font-family:'Syncopate';font-size:20px;color:var(--purple);">0 km</div></div>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; margin-top:15px;">
+                            <button class="jarvis-btn btn-green btn-sm" onclick="downloadKmExcel()">📊 DOWNLOAD EXCEL</button>
+                        </div>
+                        <div class="table-wrap" style="margin-top:15px;">
+                            <table class="data-table">
+                                <thead><tr><th>Duty</th><th>Sign On</th><th>Sign On Loc</th><th>Sign Off</th><th>Sign Off Loc</th><th>KM</th></tr></thead>
+                                <tbody id="kmTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Missing KM Audit -->
+                    <div style="margin-top:25px;padding-top:20px;border-top:2px solid rgba(255,107,53,0.3);">
+                        <div class="section-header orange">
+                            <div class="section-icon">🔍</div>
+                            <div class="section-title">Missing KM Audit</div>
+                        </div>
+                        <p style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:12px;">
+                            Scan all day types for trips with 0 KM to identify missing route data.
+                        </p>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="jarvis-btn btn-orange" onclick="findMissingKm()" style="font-size:11px;padding:12px;">🔍 FIND MISSING KM</button>
+                        <button class="jarvis-btn btn-green" onclick="downloadMissingKmCsv()" style="font-size:11px;padding:12px;">📥 EXPORT MISSING KM CSV</button>
+                        </div>
+                        <div id="missingKmWrapper" style="display:none;margin-top:15px;">
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:15px;">
+                                <div style="background:rgba(239,68,68,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(239,68,68,0.3);">
+                                    <div style="font-size:9px;color:rgba(255,255,255,0.6);">MISSING ROUTES</div>
+                                    <div id="missingRouteCount" style="font-size:20px;color:var(--red);font-weight:bold;">0</div>
+                                </div>
+                                <div style="background:rgba(255,107,53,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(255,107,53,0.3);">
+                                    <div style="font-size:9px;color:rgba(255,255,255,0.6);">TOTAL AFFECTED TRIPS</div>
+                                    <div id="missingTripCount" style="font-size:20px;color:var(--orange);font-weight:bold;">0</div>
+                                </div>
+                                <div style="background:rgba(0,212,255,0.15);padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(0,212,255,0.3);">
+                                    <div style="font-size:9px;color:rgba(255,255,255,0.6);">AFFECTED DUTIES</div>
+                                    <div id="missingDutyCount" style="font-size:20px;color:var(--cyan);font-weight:bold;">0</div>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead><tr><th>Route (Start → End)</th><th>Affected Trips</th><th>Affected Duties</th><th>Day Types</th></tr></thead>
+                                    <tbody id="missingKmBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- Tab: Users -->
+                <div id="adminTabUsers" class="admin-tab-content" style="display:none;">
+                    <div class="section-header" style="border-left-color:var(--red);background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1));">
+                        <div class="section-icon" style="background:linear-gradient(135deg,var(--red),#991b1b);">👥</div>
+                        <div class="section-title">User Access Management</div>
+                    </div>
+                    
+                    <div id="userMgmtAccessError" style="display:none;background:rgba(239,68,68,0.2);border:1px solid var(--red);border-radius:8px;padding:10px;margin-bottom:15px;text-align:center;color:var(--red);font-size:12px;">
+                        Only Admins can access this section!
+                    </div>
+                    
+                    <div id="userMgmtContent">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+                            <div class="glass-card" style="padding:15px;">
+                                <h4 style="color:var(--cyan);margin-bottom:10px;font-family:'Syncopate';font-size:11px;">ADD NEW ACCESS</h4>
+                                <div class="input-group">
+                                    <input type="text" id="newUserEmpId" class="jarvis-input" placeholder="Emp ID" style="text-transform:uppercase;">
+                                </div>
+                                <div class="input-group">
+                                    <select id="newUserAccessLevel" class="jarvis-select" onchange="toggleSecretCode('new')">
+                                        <option value="crewcontroller">Crew Controller</option>
+                                        <option value="admin">Admin (Secret Code Required)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group" id="newSecretCodeGroup" style="display:none;">
+                                    <input type="password" id="newSecretCode" class="jarvis-input" placeholder="Enter Secret Code">
+                                </div>
+                                <button class="jarvis-btn btn-sm" onclick="addNewUserAccess()" style="background:linear-gradient(135deg,var(--green),#15803d);width:100%;">➕ ADD ACCESS</button>
+                            </div>
+                            
+                            <div class="glass-card" style="padding:15px;">
+                                <h4 style="color:var(--red);margin-bottom:10px;font-family:'Syncopate';font-size:11px;">REMOVE ACCESS</h4>
+                                <div class="input-group">
+                                    <input type="text" id="removeUserEmpId" class="jarvis-input" placeholder="Emp ID" style="text-transform:uppercase;">
+                                </div>
+                                <div class="input-group">
+                                    <select id="removeUserAccessLevel" class="jarvis-select" onchange="toggleSecretCode('remove')">
+                                        <option value="crewcontroller">Crew Controller</option>
+                                        <option value="admin">Admin (Secret Code Required)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group" id="removeSecretCodeGroup" style="display:none;">
+                                    <input type="password" id="removeSecretCode" class="jarvis-input" placeholder="Enter Secret Code">
+                                </div>
+                                <button class="jarvis-btn btn-sm" onclick="removeUserAccess()" style="background:linear-gradient(135deg,var(--red),#991b1b);width:100%;">➖ REMOVE ACCESS</button>
+                            </div>
+                        </div>
+                        
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+                            <div style="background:rgba(0,0,0,0.3);padding:15px;border-radius:12px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                                    <h4 style="color:var(--cyan);margin:0;font-family:'Syncopate';font-size:11px;">ADMIN ACCESS LIST</h4>
+                                    <button onclick="resetAdminIds()" style="background:rgba(255,107,53,0.3);border:1px solid var(--orange);color:var(--orange);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:9px;">RESET</button>
+                                </div>
+                                <div id="adminAccessList" style="font-size:11px;color:rgba(255,255,255,0.7);max-height:150px;overflow-y:auto;"></div>
+                            </div>
+                            
+                            <div style="background:rgba(0,0,0,0.3);padding:15px;border-radius:12px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                                    <h4 style="color:var(--green);margin:0;font-family:'Syncopate';font-size:11px;">CREW CONTROLLER ACCESS LIST</h4>
+                                    <button onclick="resetCcIds()" style="background:rgba(255,107,53,0.3);border:1px solid var(--orange);color:var(--orange);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:9px;">RESET</button>
+                                </div>
+                                <div id="ccAccessList" style="font-size:11px;color:rgba(255,255,255,0.7);max-height:150px;overflow-y:auto;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card" style="padding:15px;">
+                            <h4 style="color:var(--purple);margin-bottom:10px;font-family:'Syncopate';font-size:11px;">REGISTERED USERS</h4>
+                            <div class="table-wrap" style="max-height:200px;overflow-y:auto;">
+                                <table class="data-table" style="font-size:10px;">
+                                    <thead><tr><th>Emp ID</th><th>Name</th><th>Access</th><th>Created</th></tr></thead>
+                                    <tbody id="registeredUsersBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card" style="padding:15px;margin-top:15px;">
+                            <h4 style="color:var(--purple);margin-bottom:10px;font-family:'Syncopate';font-size:11px;">CHANGE PASSWORD</h4>
+                            <div style="margin-bottom:8px;font-size:12px;color:rgba(255,255,255,0.6);">
+                                Logged in as: <strong id="changePwdLoggedEmpId" style="color:var(--cyan);"></strong>
+                            </div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                                <input type="password" id="changePwdNew" class="jarvis-input" style="font-size:11px;padding:8px;flex:1;min-width:120px;" placeholder="New Password">
+                                <button class="jarvis-btn btn-sm" onclick="changePassword()" style="background:linear-gradient(135deg,var(--purple),#7c3aed);">🔑 CHANGE PASSWORD</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- KM Analysis Page -->
+        <div id="pageKmAnalysis" class="page">
+            <div class="glass-card cinematic-enter" style="padding:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid rgba(34,197,94,0.3);">
+                    <h2 style="font-family:'Syncopate';font-size:16px;margin:0;color:var(--green);">📊 KM Analysis</h2>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <button class="jarvis-btn btn-sm" onclick="showPage('pageHome')" style="background:rgba(255,255,255,0.1);font-size:9px;padding:6px 10px;">← BACK</button>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:15px;">
+                    <div style="flex:1;min-width:150px;">
+                        <label style="font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Day Type</label>
+                        <select id="kmAnalysisDay" class="jarvis-select" style="padding:8px 12px;font-size:12px;">
+                            <option value="Weekday">Weekday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Special">Special</option>
+                            <option class="admin-only-day" style="display:none;" value="Test">Test</option>
+                        </select>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <button class="jarvis-btn btn-sm" onclick="generateKmAnalysis()" style="background:linear-gradient(135deg,var(--green),#15803d);font-size:10px;padding:8px 14px;">🔄 REFRESH</button>
+                    </div>
+                </div>
+                
+                <!-- KM Summary -->
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(21,128,61,0.1));border-radius:8px;border-left:4px solid var(--green);">
+                        <span style="font-size:14px;">📊</span>
+                        <span style="font-family:'Syncopate';font-size:11px;text-transform:uppercase;letter-spacing:1px;">Duty KM Summary — Highest First</span>
+                        <span id="kmAnalysisCount" style="margin-left:auto;font-size:10px;color:rgba(255,255,255,0.4);font-family:'Syncopate';"></span>
+                    </div>
+                    <div class="table-wrap" style="max-height:500px;overflow-y:auto;">
+                        <table class="data-table" style="font-size:11px;">
+                            <thead><tr><th>#</th><th>Duty</th><th>Sign On</th><th>Sign Off</th><th>Total KM</th><th>Avg/Trip</th><th>Trips</th><th></th></tr></thead>
+                            <tbody id="kmAnalysisBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:center;padding:16px 10px 10px;font-size:9px;color:rgba(255,255,255,0.25);font-family:'Syncopate',sans-serif;letter-spacing:1px;text-transform:uppercase;border-top:1px solid rgba(255,255,255,0.06);margin-top:20px;">
+            &copy; <script>document.write(new Date().getFullYear())</script> All Rights Reserved
+        </div>
+    </div>
+    
+    <script src="app.js" defer></script>
+</body>
+</html>
