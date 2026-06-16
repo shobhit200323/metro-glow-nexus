@@ -142,3 +142,195 @@
     color: var(--color-foreground);
   }
 }
+
+/* =========================================================
+ * DMRC Crew Control Portal — design system
+ * Dark premium base, per-line futuristic accent tokens.
+ * ========================================================= */
+
+:root {
+  /* DMRC dark palette (mirrors main.html) */
+  --dmrc-bg-1: #0a0f1f;
+  --dmrc-bg-2: #0f172a;
+  --dmrc-bg-3: #0d1326;
+  --dmrc-text: #f8faff;
+  --dmrc-text-muted: rgba(255, 255, 255, 0.55);
+  --dmrc-text-dim: rgba(255, 255, 255, 0.32);
+  --dmrc-border: rgba(255, 255, 255, 0.1);
+  --dmrc-glass: rgba(15, 23, 42, 0.55);
+
+  /* Per-line accents */
+  --line-red: #ff2a3a;
+  --line-red-deep: #8a0a14;
+  --line-pink: #ff3ea0;
+  --line-pink-deep: #6b0a4a;
+  --line-blue: #2e7dff;
+  --line-blue-deep: #0a2a6b;
+  --line-yellow: #ffd60a;
+  --line-yellow-deep: #6b5200;
+  --line-green: #00e08a;
+  --line-green-deep: #053a23;
+  --line-violet: #a259ff;
+  --line-violet-deep: #2a0f55;
+}
+
+html,
+body {
+  background:
+    radial-gradient(1200px 600px at 12% -10%, rgba(46, 125, 255, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(255, 62, 160, 0.14), transparent 65%),
+    linear-gradient(135deg, var(--dmrc-bg-1) 0%, var(--dmrc-bg-2) 45%, var(--dmrc-bg-3) 100%);
+  color: var(--dmrc-text);
+  font-family: "Inter", system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Subtle background grid */
+.dmrc-grid-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+/* Watermark logo */
+.dmrc-watermark {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+}
+.dmrc-watermark svg { width: min(80vw, 900px); height: auto; }
+
+/* Glass card base */
+.dmrc-glass {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%),
+    var(--dmrc-glass);
+  border: 1px solid var(--dmrc-border);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-radius: 18px;
+}
+
+/* Line card — accent-driven via CSS vars set inline */
+.line-card {
+  --accent: var(--line-blue);
+  --accent-deep: var(--line-blue-deep);
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 22px;
+  background:
+    linear-gradient(160deg, color-mix(in oklab, var(--accent) 12%, transparent) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(20, 28, 48, 0.85), rgba(12, 18, 34, 0.92));
+  border: 1px solid color-mix(in oklab, var(--accent) 38%, var(--dmrc-border));
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent) 12%, transparent) inset,
+    0 10px 40px rgba(0, 0, 0, 0.45),
+    0 0 30px -10px color-mix(in oklab, var(--accent) 50%, transparent);
+  transition: transform 280ms cubic-bezier(.2,.7,.2,1), box-shadow 280ms, border-color 280ms;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 240px;
+  isolation: isolate;
+}
+.line-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--accent) 0%, transparent 6%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+.line-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--accent) 35%, transparent) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 400ms, transform 800ms;
+  transform: translateX(-30%);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+.line-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in oklab, var(--accent) 70%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent) 25%, transparent) inset,
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 60px -10px color-mix(in oklab, var(--accent) 70%, transparent);
+}
+.line-card:hover::after { opacity: 1; transform: translateX(30%); }
+.line-card.is-locked {
+  opacity: 0.78;
+}
+.line-card.is-locked:hover { transform: translateY(-3px); }
+
+.line-card-content { position: relative; z-index: 2; display: contents; }
+
+/* Splash */
+@keyframes splashStroke {
+  from { stroke-dashoffset: var(--len, 600); opacity: 0; }
+  60%  { opacity: 1; }
+  to   { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes splashFadeOut {
+  to { opacity: 0; transform: scale(1.04); }
+}
+@keyframes splashFadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes glowPulse {
+  0%, 100% { filter: drop-shadow(0 0 6px currentColor); }
+  50%      { filter: drop-shadow(0 0 18px currentColor); }
+}
+
+.splash-stroke {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: var(--len, 600);
+  stroke-dashoffset: var(--len, 600);
+  animation: splashStroke 1.4s cubic-bezier(.2,.7,.2,1) forwards;
+}
+
+.fade-in-page { animation: splashFadeIn 600ms ease-out both; }
+.fade-out-splash { animation: splashFadeOut 600ms ease-in forwards; }
+
+/* Status dot */
+@keyframes liveDot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+.live-dot { animation: liveDot 1.6s ease-in-out infinite; }
+
+/* Scanline shimmer for active cards */
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+.line-card .scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--accent) 18%, transparent), transparent);
+  height: 30%;
+  pointer-events: none;
+  animation: scanline 6s linear infinite;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-stroke { animation: none; stroke-dashoffset: 0; }
+  .line-card .scanline { animation: none; opacity: 0; }
+  .line-card:hover { transform: none; }
+}
