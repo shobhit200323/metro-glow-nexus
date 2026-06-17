@@ -63,6 +63,17 @@ export function Splash({ onDone }: Props) {
     };
   }, [onDone]);
 
+  // Fail-safe: auto-dismiss after 5 seconds
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (leavingRef.current) return;
+      leavingRef.current = true;
+      setLeaving(true);
+      window.setTimeout(onDone, 700);
+    }, 5000);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
   return (
     <div
       className={`splash-root ${leaving ? "is-leaving" : ""}`}
@@ -115,6 +126,20 @@ export function Splash({ onDone }: Props) {
       {showHint && (
         <div className="splash-hint">Click anywhere to enter</div>
       )}
+
+      {/* Small skip button */}
+      <button
+        className="splash-skip"
+        onClick={() => {
+          if (leavingRef.current) return;
+          leavingRef.current = true;
+          setLeaving(true);
+          window.setTimeout(onDone, 700);
+        }}
+        aria-label="Skip splash screen"
+      >
+        Skip
+      </button>
     </div>
   );
 }
