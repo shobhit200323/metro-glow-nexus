@@ -23,10 +23,10 @@ export function Clock() {
   }, []);
   return (
     <div
-      className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-sm tracking-wider text-sky-300"
+      className="rounded-md border border-slate-300 bg-white/70 px-3 py-1.5 font-mono text-sm tracking-wider text-slate-800 shadow-sm backdrop-blur"
       title="Asia/Kolkata"
     >
-      {time} <span className="ml-1 text-[10px] text-white/40">IST</span>
+      {time} <span className="ml-1 text-[10px] text-slate-500">IST</span>
     </div>
   );
 }
