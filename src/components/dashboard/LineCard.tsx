@@ -1,8 +1,10 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ArrowRight, GripVertical, Lock, TrainFront } from "lucide-react";
+import { ArrowRight, GripVertical, Lock } from "lucide-react";
 import type { Line } from "@/lib/lines";
 import { useEffect, useState } from "react";
+import { DmrcLogo } from "@/components/common/DmrcLogo";
+import { DmrcMark } from "@/components/common/DmrcMark";
 
 type Props = {
   line: Line;
@@ -64,26 +66,31 @@ export function LineCard({ line, onLaunch }: Props) {
       {line.active && <div className="scanline" />}
 
       <div className="line-card-content">
-        {/* Top row: icon + grip + status */}
+        {/* Logo header (user's logo at top of every card) */}
+        <div className="relative z-10 flex items-center justify-center">
+          <DmrcLogo className="h-10 w-10" />
+        </div>
+
+        {/* Status + grip row */}
         <div className="relative z-10 flex items-start justify-between">
-          <div
-            className="grid h-11 w-11 place-items-center rounded-xl border"
+          <span
+            className="rounded-md border px-2 py-0.5 text-[10px] font-bold tracking-wider"
             style={{
-              borderColor: "color-mix(in oklab, var(--accent) 60%, transparent)",
-              background: "color-mix(in oklab, var(--accent) 14%, transparent)",
-              color: "var(--accent)",
+              borderColor: "color-mix(in oklab, var(--accent) 55%, transparent)",
+              background: "color-mix(in oklab, var(--accent) 12%, transparent)",
+              color: "var(--accent-deep)",
             }}
           >
-            <TrainFront className="h-5 w-5" />
-          </div>
+            {line.short}
+          </span>
           <div className="flex items-center gap-2">
             {line.active ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-300">
-                <span className="live-dot h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/50 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-700">
+                <span className="live-dot h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 Live
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/50">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
                 <Lock className="h-3 w-3" />
                 Coming Soon
               </span>
@@ -91,7 +98,7 @@ export function LineCard({ line, onLaunch }: Props) {
             <button
               {...sortable.attributes}
               {...sortable.listeners}
-              className="rounded-md p-1 text-white/30 hover:bg-white/5 hover:text-white/70 cursor-grab active:cursor-grabbing"
+              className="rounded-md p-1 text-slate-400 hover:bg-slate-900/5 hover:text-slate-700 cursor-grab active:cursor-grabbing"
               aria-label="Drag to reorder"
               type="button"
             >
@@ -101,32 +108,21 @@ export function LineCard({ line, onLaunch }: Props) {
         </div>
 
         {/* Title */}
-        <div className="relative z-10">
-          <div className="flex items-baseline gap-2">
-            <h3
-              className="text-xl font-bold tracking-wider"
-              style={{ color: "var(--accent)", fontFamily: "'JetBrains Mono', monospace" }}
-            >
-              {line.name}
-            </h3>
-            <span className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-white/60">
-              {line.short}
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-white/70">{line.desc}</p>
-          <p className="mt-0.5 text-[11px] uppercase tracking-wider text-white/35">
-            {line.persona}
+        <div className="relative z-10 text-center">
+          <h3
+            className="text-xl font-bold tracking-wider"
+            style={{ color: "var(--accent-deep)", fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            {line.name}
+          </h3>
+          <p className="mt-1 text-sm text-slate-600">
+            <DmrcMark /> · {line.desc.replace(/^Line \d[\/0-9]*\s—\s/, "")}
           </p>
         </div>
 
-        {/* Stations */}
-        <div className="relative z-10 mt-auto text-[12px] font-mono text-white/55">
-          {line.stations}
-        </div>
-
         {/* Bottom row */}
-        <div className="relative z-10 flex items-end justify-between gap-2">
-          <span className="text-[10px] uppercase tracking-widest text-white/30">
+        <div className="relative z-10 mt-auto flex items-end justify-between gap-2">
+          <span className="text-[10px] uppercase tracking-widest text-slate-500">
             {lastSeen ? `Last opened ${lastSeen}` : `Shortcut · ${line.key}`}
           </span>
           {line.active ? (
@@ -136,16 +132,16 @@ export function LineCard({ line, onLaunch }: Props) {
               disabled={launching}
               className="group inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold uppercase tracking-wider transition disabled:opacity-60"
               style={{
-                borderColor: "color-mix(in oklab, var(--accent) 60%, transparent)",
-                background: "color-mix(in oklab, var(--accent) 18%, transparent)",
-                color: "var(--accent)",
+                borderColor: "color-mix(in oklab, var(--accent) 70%, transparent)",
+                background: "var(--accent)",
+                color: "#fff",
               }}
             >
               {launching ? "Launching…" : "Launch Portal"}
               <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
             </button>
           ) : (
-            <span className="text-[10px] uppercase tracking-widest text-white/30">
+            <span className="text-[10px] uppercase tracking-widest text-slate-400">
               Locked
             </span>
           )}
