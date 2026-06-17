@@ -57,6 +57,7 @@ export function Splash({ onDone }: Props) {
       role="button"
       tabIndex={0}
       onClick={dismiss}
+      onPointerDown={dismiss}
       aria-label="Enter DMRC Trip Finder"
     >
       {/* volumetric rays */}
