@@ -19,6 +19,7 @@ import { LineCard } from "./LineCard";
 import { Clock } from "./Clock";
 import { DmrcMark } from "@/components/common/DmrcMark";
 import { DmrcLogo } from "@/components/common/DmrcLogo";
+import watermarkAsset from "@/assets/dmrc-watermark.png.asset.json";
 
 type Filter = "all" | "active" | "soon";
 const ORDER_KEY = "dmrc-line-order";
@@ -124,9 +125,9 @@ export function Dashboard() {
     <div className="fade-in-page relative min-h-screen dmrc-page">
       {/* paper-grain noise overlay */}
       <div className="dmrc-grain" aria-hidden />
-      {/* watermark logo (placeholder; replace with uploaded asset) */}
+      {/* watermark image */}
       <div className="dmrc-watermark" aria-hidden>
-        <DmrcLogo />
+        <img src={watermarkAsset.url} alt="DMRC watermark" />
       </div>
       {/* fixed decorative side panels (hidden on small screens) */}
       <aside className="dmrc-side dmrc-side-left" aria-hidden />
