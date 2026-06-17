@@ -125,6 +125,9 @@ export function Dashboard() {
     <div className="fade-in-page relative min-h-screen dmrc-page">
       {/* paper-grain noise overlay */}
       <div className="dmrc-grain" aria-hidden />
+      {/* ambient futuristic background — grid + aurora glow */}
+      <div className="dmrc-ambient" aria-hidden />
+      <div className="dmrc-scanline" aria-hidden />
       {/* watermark image */}
       <div className="dmrc-watermark" aria-hidden>
         <img src={watermarkAsset.url} alt="DMRC watermark" />
