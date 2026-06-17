@@ -264,7 +264,8 @@ body {
   z-index: 0;
   opacity: 0.06;
 }
-.dmrc-watermark svg { width: min(60vw, 600px); height: auto; }
+.dmrc-watermark svg,
+.dmrc-watermark img { width: min(60vw, 600px); height: auto; }
 
 /* Filter bar (light glass) */
 .dmrc-filterbar {
