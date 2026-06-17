@@ -17,7 +17,8 @@ import {
 import { LINES, type Line } from "@/lib/lines";
 import { LineCard } from "./LineCard";
 import { Clock } from "./Clock";
-import { DmrcMark } from "../splash/DmrcMark";
+import { DmrcMark } from "@/components/common/DmrcMark";
+import { DmrcLogo } from "@/components/common/DmrcLogo";
 
 type Filter = "all" | "active" | "soon";
 const ORDER_KEY = "dmrc-line-order";
@@ -120,25 +121,30 @@ export function Dashboard() {
   );
 
   return (
-    <div className="fade-in-page relative min-h-screen">
-      <div className="dmrc-grid-bg" />
-      <div className="dmrc-watermark">
-        <DmrcMark />
+    <div className="fade-in-page relative min-h-screen dmrc-page">
+      {/* paper-grain noise overlay */}
+      <div className="dmrc-grain" aria-hidden />
+      {/* watermark logo (placeholder; replace with uploaded asset) */}
+      <div className="dmrc-watermark" aria-hidden>
+        <DmrcLogo />
       </div>
+      {/* fixed decorative side panels (hidden on small screens) */}
+      <aside className="dmrc-side dmrc-side-left" aria-hidden />
+      <aside className="dmrc-side dmrc-side-right" aria-hidden />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+      <div className="relative z-10 mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-10">
         {/* Header */}
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <DmrcMark className="h-12 w-12" />
+            <DmrcLogo className="h-12 w-12" />
             <div>
               <h1
-                className="text-xl font-bold tracking-[0.25em] text-white sm:text-2xl"
+                className="text-xl font-bold tracking-[0.25em] text-slate-900 sm:text-2xl"
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}
               >
-                DMRC <span className="text-sky-400">CREW CONTROL</span>
+                <DmrcMark /> <span className="text-amber-700">CREW CONTROL</span>
               </h1>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-white/40">
+              <p className="mt-1 text-[11px] uppercase tracking-[0.3em] text-slate-500">
                 Trip Finder Portal · {counts.active} of {counts.all} lines online
               </p>
             </div>
@@ -149,7 +155,7 @@ export function Dashboard() {
         </header>
 
         {/* Filter bar */}
-        <div className="dmrc-glass mt-8 flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="dmrc-filterbar mt-8 flex flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex flex-wrap gap-1.5">
             {(
               [
@@ -166,8 +172,8 @@ export function Dashboard() {
                   onClick={() => setFilter(f)}
                   className={`rounded-md px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition ${
                     active
-                      ? "bg-white/15 text-white shadow-inner"
-                      : "text-white/55 hover:bg-white/5 hover:text-white"
+                      ? "bg-slate-900 text-amber-50 shadow"
+                      : "text-slate-600 hover:bg-slate-900/5 hover:text-slate-900"
                   }`}
                 >
                   {label}
@@ -175,8 +181,8 @@ export function Dashboard() {
               );
             })}
           </div>
-          <div className="text-[10px] uppercase tracking-[0.25em] text-white/35">
-            Press <kbd className="rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono">1–6</kbd> to launch · Drag cards to reorder
+          <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">
+            Press <kbd className="rounded border border-slate-300 bg-white px-1 py-0.5 font-mono text-slate-700">1–6</kbd> to launch · Drag cards to reorder
           </div>
         </div>
 
@@ -192,8 +198,8 @@ export function Dashboard() {
         </DndContext>
 
         {/* Footer */}
-        <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/5 pt-6 text-[10px] uppercase tracking-[0.3em] text-white/30">
-          <div>DMRC Crew Control Portal · Hosted by DMM</div>
+        <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-slate-300/60 pt-6 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+          <div><DmrcMark /> Crew Control Portal · Hosted by DMM</div>
           <div className="flex items-center gap-2">
             {LINES.map((l) => (
               <span

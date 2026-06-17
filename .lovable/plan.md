@@ -1,96 +1,83 @@
+# Plan: Cinematic Splash + Cream Dashboard Refresh
 
-## Goal
+## Assets you need to upload (via chat + button)
+A Windows file path (`D:\...`) can't be read from your machine. Please drag-and-drop these 4 images into the chat in your next message:
+1. **Main logo** — shown on splash + at the top of every card
+2. **Left-side decorative image**
+3. **Right-side decorative image**
+4. **Watermark logo** (recommend transparent PNG)
 
-Rebuild your DMRC Crew Control Portal inside this Lovable (TanStack Start + React + Tailwind v4) project:
+Once uploaded I'll wire them into the components below. I'll start the implementation immediately after they arrive.
 
-1. **5-second animated splash screen** (DMRC mark + 6 metro line strokes drawing in, tagline, auto-advance).
-2. **Dashboard homepage** that replicates your `main.html` — 6 line cards (Red, Pink, Blue active; Green, Violet, Yellow "Coming Soon"), filters, theme toggle, IST clock, keyboard shortcuts (1–6), drag-to-reorder, last-accessed, server health pill — all rebuilt as clean React + Tailwind components driven by a single `LINES` config.
-3. **Each line gets its own futuristic identity** (card glow, accent color, micro-motion):
-   - Red — holographic red ("Spider-Man" energy, no Marvel assets)
-   - Blue — deep + electric blue ("Captain America" energy, no shields/badges)
-   - Pink — neon magenta (Blade Runner 2049)
-   - Yellow — Tron Legacy electric yellow grid
-   - Green — bio/matrix glow (locked)
-   - Violet — synthwave (locked)
+---
 
-## Scope decision (important)
+## 1. Splash / Flash Page (`Splash.tsx` rewrite)
+Full-screen cinematic gate, **stays until user clicks** (not 5s auto-dismiss).
 
-Your three line portals (`redline.html`, `pinkline.html`, `blueline.html`) are massive standalone apps with staff login, admin console, trip-finder, KM analysis, visitor stats, chart.js, sortable trips, message broadcast, file upload — all backed by external servers at `localhost:3000/3001/3002`. A faithful React port is a multi-week project and depends on backends that aren't available to this preview.
+- **Background:** pure black → dark charcoal radial.
+- **Energy gateway:** rotating circular portal of orange-gold rings, built with layered SVG circles + CSS `conic-gradient` + slow `rotate` animation. Multiple concentric rings rotating at different speeds.
+- **Particles:** ~60 floating gold sparks (absolute-positioned divs with randomized `keyframes` drift + opacity pulse). Reduced count on mobile.
+- **Volumetric rays:** large soft `radial-gradient` blobs with `blur` + low opacity, drifting.
+- **Energy waves:** expanding ring pulses (scale 0→2, opacity 1→0).
+- **Logo:** user's logo, fades in 4–6s with a CSS `mask`/`linear-gradient` sweep for the "light sheen" reflection.
+- **Title text:** "Welcome to **DMRC** Trip Finder" — the word **DMRC** rendered as a styled `<span class="dmrc-mark">` (see global rule below). Text reveals 6–8s with letter-by-letter fade + golden glow.
+- **Parallax:** subtle `transform: translate3d` on mousemove for gateway / particles.
+- **Dismiss:** the whole overlay has `onClick` → fades out → reveals dashboard. A small subtle "Click anywhere to enter" hint appears at 8s.
+- **Performance:** all animations CSS-only, `will-change: transform, opacity`, `prefers-reduced-motion` collapses to a simple fade.
+- **No more sessionStorage skip** — splash shows on every load until clicked, per your spec.
 
-Proposal — phased:
-
-- **Phase 1 (this plan):** Ship the splash + dashboard, plus the themed visual system. Place your existing `redline.html`, `pinkline.html`, `blueline.html` (and their `style.css`) into `public/lines/` so the dashboard "Launch Portal" buttons open them directly (`/lines/redline.html`, etc.). All current functionality is preserved 1:1 because we're serving the original files. The server-health pills become a static "Live" indicator (no `localhost:300x` to ping from a deployed site).
-- **Phase 2 (separate task, after you approve Phase 1):** Restyle each line portal's CSS to the new futuristic identity without touching its JS, so the trip-finder/admin features keep working. Full React port only if you later want to migrate the backends too.
-
-## Files to create
-
+## 2. Global "DMRC" wordmark rule
+A reusable `<DmrcMark />` component used **everywhere** the word DMRC appears (splash, header, footer, card body text):
 ```
-public/
-  lines/
-    redline.html          # copied from upload
-    pinkline.html         # copied from upload
-    blueline.html         # copied from upload
-    style.css             # copied from upload (referenced by the 3 pages)
-
-src/
-  styles.css              # add @theme tokens for each line + base dark palette
-  routes/
-    __root.tsx            # add Inter + JetBrains Mono + Syncopate <link>s, dark bg
-    index.tsx             # mounts <Splash/> then <Dashboard/>
-  components/
-    splash/
-      Splash.tsx          # 5s animation, calls onDone
-      DmrcMark.tsx        # SVG metro mark
-      LineStrokes.tsx     # 6 colored strokes drawing in via CSS keyframes
-    dashboard/
-      Dashboard.tsx       # layout, header, filters, grid, footer
-      LineCard.tsx        # one card; reads accent tokens from line config
-      FilterBar.tsx       # All / Active / Coming Soon
-      Clock.tsx           # IST clock
-      ThemeToggle.tsx     # dark/light, persists to localStorage
-      useKeyboardShortcuts.ts
-      useCardOrder.ts     # drag-to-reorder via @dnd-kit, persisted
-      useLastAccessed.ts
-  lib/
-    lines.ts              # single source of truth: id, name, color, url, active, theme
+.dmrc-mark {
+  font-weight: 900;
+  color: #8b0000;                       /* dark red */
+  border: 1px solid rgba(139,0,0,0.6);
+  border-radius: 4px;
+  padding: 0 6px;
+  box-shadow: 0 0 8px rgba(220,20,20,0.55), 0 0 18px rgba(255,40,40,0.35);
+  text-shadow: 0 0 6px rgba(255,60,60,0.55);
+  animation: dmrcGlow 2.2s ease-in-out infinite;
+}
 ```
+Pulsing glow keyframes for the border + text-shadow. Applied even inside the splash title.
 
-## Design system (added to `src/styles.css`)
+## 3. Dashboard background & layout (`Dashboard.tsx` + `styles.css`)
+- **Background:** cream gradient `linear-gradient(180deg, #fdf9f0 0%, #f5ecd7 100%)` with a very faint paper-grain SVG noise overlay.
+- **Watermark:** user's watermark image, centered fixed behind content, `opacity: 0.06`, `pointer-events: none`, large (`min(60vw, 600px)`).
+- **Side panels:** two `position: fixed` columns (left + right), each `width: clamp(120px, 14vw, 220px)`, full height, displaying the uploaded side images with `object-fit: cover` and a soft fade-to-cream mask on the inner edge. Hidden below 900px viewport so mobile stays clean. Content grid is constrained with `max-width` and centered between them.
+- Header keeps logo + IST clock; "DMRC" in the title uses `<DmrcMark />`.
 
-- Base dark palette ported from `main.html` (`--body-bg` gradient, `--text-primary` etc.) into `@theme` tokens so Tailwind utilities (`bg-background`, `text-foreground`, `border-border`) work.
-- Per-line theme tokens (e.g. `--line-red: #E41F28`, `--line-red-glow`, `--line-red-grid`) and matching gradient/shadow tokens. Cards consume them via CSS custom properties set inline from the `LINES` config (mirrors your current `applyThemes()` pattern).
-- Glassmorphism utility: backdrop blur + 1px border + low-opacity layered gradient, scoped per card so accents stay bold and readable (not washed out).
-- Animation utilities: subtle scanline shimmer, holographic sheen on hover, accent ring pulse on active cards. Reduced-motion respected.
+## 4. Line cards (`LineCard.tsx` rewrite)
+Switch from dark glass tiles to **light cards with per-line colored accents**:
+- Base: `background: #ffffff`, `border: 1px solid rgba(0,0,0,0.06)`, `border-top: 4px solid var(--accent)` (line color), `box-shadow: 0 12px 30px -18px var(--accent), 0 4px 12px rgba(0,0,0,0.06)`.
+- Hover: lift + accent glow ring + subtle sheen sweep.
+- **Top of each card:** user's main logo (small, ~40px, centered above line name).
+- **Remove:** stations count, persona/theme label (e.g., "Tron Legacy", "Blade Runner 2049"), and any "graphics/UI style" descriptor.
+- **Keep:** line color stripe, line name (with `<DmrcMark />` where DMRC appears), KM length, status badge (Active / Coming Soon), Launch Portal button, last-opened timestamp, drag handle.
+- Coming-soon cards: same light treatment, accent muted to ~40%, locked icon, button disabled.
 
-## Splash behavior
+## 5. Data changes (`src/lib/lines.ts`)
+- Keep: `id, name, color, kmLength, status, portalUrl`.
+- Remove from rendering (can stay in data, just not displayed): `stations`, `persona`, `themeLabel`.
 
-- Mounts on first load only (sessionStorage flag so internal nav doesn't replay it).
-- 0.0s–4.5s: mark scales in, 6 line strokes draw in staggered (each in its line color), "DMRC CREW CONTROL PORTAL" types/fades in below.
-- 4.5s–5.0s: whole splash fades + scales out as dashboard fades/scales in (cross-fade, no white flash).
-- "Skip" affordance: click anywhere or press any key to advance early.
+## 6. Files to change
+- `src/components/splash/Splash.tsx` — full rewrite (cinematic gateway, click-to-dismiss, no timer skip).
+- `src/components/splash/Gateway.tsx` *(new)* — SVG + CSS portal rings.
+- `src/components/splash/Particles.tsx` *(new)* — floating sparks.
+- `src/components/common/DmrcMark.tsx` *(new)* — reusable styled wordmark.
+- `src/components/dashboard/Dashboard.tsx` — cream bg, side panels, watermark layer, wire DmrcMark into header.
+- `src/components/dashboard/LineCard.tsx` — light card rewrite, logo header, remove stations + persona/theme labels.
+- `src/components/dashboard/SidePanels.tsx` *(new)* — fixed left/right image columns.
+- `src/styles.css` — cream theme tokens, `.dmrc-mark` + keyframes, splash keyframes (rotate, drift, sheen, ring pulse), watermark utility.
+- `src/routes/index.tsx` — remove sessionStorage skip so splash shows every load.
+- Asset imports for the 4 uploaded images (saved under `src/assets/`).
 
-## Dashboard parity checklist (vs. `main.html`)
+## 7. Out of scope (kept as-is)
+- The 3 line portals in `public/lines/` (redline/pinkline/blueline) — Phase 2.
+- Drag-to-reorder, keyboard shortcuts 1–6, IST clock, filter bar — all kept.
+- Coming-soon status flow — kept, just restyled.
 
-- [x] 6 cards with same `id/name/desc/stations/color/url/active/key` config
-- [x] Filter bar (All / Active / Coming Soon) with sessionStorage persistence
-- [x] Drag-to-reorder, persisted to localStorage
-- [x] Keyboard shortcuts 1–6 to launch
-- [x] Last-accessed relative time per card
-- [x] IST clock in header
-- [x] Theme toggle (dark/light), persisted
-- [x] Coming Soon ribbon + lock icon + muted treatment for locked cards
-- [x] Launch button with brief loading state, opens portal in new tab
-- [~] Server health pill — replaced with static "Live" badge for active lines, since `localhost:300x` isn't reachable from the deployed site (can be wired back if you provide public health URLs later)
+---
 
-## Dependencies to add
-
-- `@dnd-kit/core`, `@dnd-kit/sortable` — drag-reorder (replaces SortableJS)
-- `clsx` — already present via shadcn utils
-
-No GSAP / Three.js / Font Awesome on the dashboard — animations are CSS keyframes, icons are inline SVG / lucide-react (already installed). This keeps the splash + dashboard fast; your line HTML pages keep their own GSAP/Three/FA via their existing CDN links.
-
-## Out of scope (call out explicitly)
-
-- Rebuilding trip-finder / admin / login flows in React.
-- Connecting to `localhost:3000/3001/3002` backends from the deployed app.
-- Generating real DMRC logo art (will use a clean geometric SVG mark; replace anytime by dropping a file into `src/assets/`).
+**Next step:** upload the 4 images and I'll build everything in one pass.

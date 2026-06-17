@@ -145,19 +145,20 @@
 
 /* =========================================================
  * DMRC Crew Control Portal — design system
- * Dark premium base, per-line futuristic accent tokens.
+ * Cream daylight base, per-line colored accents.
+ * Cinematic dark splash gateway.
  * ========================================================= */
 
 :root {
-  /* DMRC dark palette (mirrors main.html) */
-  --dmrc-bg-1: #0a0f1f;
-  --dmrc-bg-2: #0f172a;
-  --dmrc-bg-3: #0d1326;
-  --dmrc-text: #f8faff;
-  --dmrc-text-muted: rgba(255, 255, 255, 0.55);
-  --dmrc-text-dim: rgba(255, 255, 255, 0.32);
-  --dmrc-border: rgba(255, 255, 255, 0.1);
-  --dmrc-glass: rgba(15, 23, 42, 0.55);
+  /* DMRC cream daylight palette */
+  --dmrc-cream-1: #fdf9f0;
+  --dmrc-cream-2: #f5ecd7;
+  --dmrc-ink: #1a1a1a;
+  --dmrc-ink-muted: #475569;
+  --dmrc-border: rgba(0, 0, 0, 0.08);
+  --dmrc-card-bg: #ffffff;
+  --dmrc-red: #8b0000;
+  --dmrc-red-glow: #dc1414;
 
   /* Per-line accents */
   --line-red: #ff2a3a;
@@ -176,27 +177,82 @@
 
 html,
 body {
-  background:
-    radial-gradient(1200px 600px at 12% -10%, rgba(46, 125, 255, 0.18), transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, rgba(255, 62, 160, 0.14), transparent 65%),
-    linear-gradient(135deg, var(--dmrc-bg-1) 0%, var(--dmrc-bg-2) 45%, var(--dmrc-bg-3) 100%);
-  color: var(--dmrc-text);
+  background: linear-gradient(180deg, var(--dmrc-cream-1) 0%, var(--dmrc-cream-2) 100%);
+  color: var(--dmrc-ink);
   font-family: "Inter", system-ui, sans-serif;
   min-height: 100vh;
 }
 
-/* Subtle background grid */
-.dmrc-grid-bg {
+/* DMRC wordmark — pulsing dark red with glowing border (used everywhere "DMRC" appears) */
+.dmrc-mark {
+  display: inline-block;
+  font-weight: 900;
+  color: var(--dmrc-red);
+  letter-spacing: 0.08em;
+  border: 1px solid color-mix(in oklab, var(--dmrc-red) 60%, transparent);
+  border-radius: 6px;
+  padding: 0 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 220, 220, 0.4));
+  box-shadow:
+    0 0 8px rgba(220, 20, 20, 0.55),
+    0 0 18px rgba(255, 60, 60, 0.35),
+    inset 0 0 6px rgba(220, 20, 20, 0.2);
+  text-shadow: 0 0 6px rgba(255, 60, 60, 0.55);
+  animation: dmrcGlow 2.4s ease-in-out infinite;
+}
+@keyframes dmrcGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 6px rgba(220, 20, 20, 0.45),
+      0 0 14px rgba(255, 60, 60, 0.3),
+      inset 0 0 6px rgba(220, 20, 20, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 12px rgba(220, 20, 20, 0.75),
+      0 0 28px rgba(255, 60, 60, 0.55),
+      inset 0 0 10px rgba(220, 20, 20, 0.28);
+  }
+}
+
+/* Page wrapper */
+.dmrc-page { position: relative; overflow-x: hidden; }
+
+/* Paper-grain overlay */
+.dmrc-grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
 }
+
+/* Fixed decorative side panels (hidden on small screens) */
+.dmrc-side {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: clamp(120px, 14vw, 220px);
+  z-index: 1;
+  pointer-events: none;
+  display: none;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(139, 0, 0, 0.06) 0 2px,
+      transparent 2px 14px
+    ),
+    linear-gradient(180deg, rgba(255, 210, 122, 0.25), rgba(192, 57, 43, 0.18));
+}
+.dmrc-side-left  { left: 0;  mask-image: linear-gradient(90deg, black 0%, black 70%, transparent 100%); }
+.dmrc-side-right { right: 0; mask-image: linear-gradient(270deg, black 0%, black 70%, transparent 100%); }
+@media (min-width: 1100px) { .dmrc-side { display: block; } }
 
 /* Watermark logo */
 .dmrc-watermark {
@@ -206,36 +262,33 @@ body {
   place-items: center;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.04;
+  opacity: 0.06;
 }
-.dmrc-watermark svg { width: min(80vw, 900px); height: auto; }
+.dmrc-watermark svg { width: min(60vw, 600px); height: auto; }
 
-/* Glass card base */
-.dmrc-glass {
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%),
-    var(--dmrc-glass);
+/* Filter bar (light glass) */
+.dmrc-filterbar {
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--dmrc-border);
-  backdrop-filter: blur(14px) saturate(140%);
-  border-radius: 18px;
+  backdrop-filter: blur(8px) saturate(140%);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
-/* Line card — accent-driven via CSS vars set inline */
+/* Line card — light with colored accent */
 .line-card {
   --accent: var(--line-blue);
   --accent-deep: var(--line-blue-deep);
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  padding: 22px;
-  background:
-    linear-gradient(160deg, color-mix(in oklab, var(--accent) 12%, transparent) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(20, 28, 48, 0.85), rgba(12, 18, 34, 0.92));
-  border: 1px solid color-mix(in oklab, var(--accent) 38%, var(--dmrc-border));
+  border-radius: 18px;
+  padding: 20px;
+  background: var(--dmrc-card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 4px solid var(--accent);
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--accent) 12%, transparent) inset,
-    0 10px 40px rgba(0, 0, 0, 0.45),
-    0 0 30px -10px color-mix(in oklab, var(--accent) 50%, transparent);
+    0 12px 30px -18px color-mix(in oklab, var(--accent) 70%, transparent),
+    0 4px 14px rgba(0, 0, 0, 0.06);
   transition: transform 280ms cubic-bezier(.2,.7,.2,1), box-shadow 280ms, border-color 280ms;
   display: flex;
   flex-direction: column;
@@ -243,19 +296,11 @@ body {
   min-height: 240px;
   isolation: isolate;
 }
-.line-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, var(--accent) 0%, transparent 6%);
-  opacity: 0.9;
-  pointer-events: none;
-}
 .line-card::after {
   content: "";
   position: absolute;
   inset: -1px;
-  background: linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--accent) 35%, transparent) 50%, transparent 70%);
+  background: linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--accent) 28%, transparent) 50%, transparent 70%);
   opacity: 0;
   transition: opacity 400ms, transform 800ms;
   transform: translateX(-30%);
@@ -265,49 +310,225 @@ body {
 }
 .line-card:hover {
   transform: translateY(-6px);
-  border-color: color-mix(in oklab, var(--accent) 70%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--accent) 25%, transparent) inset,
-    0 24px 60px rgba(0, 0, 0, 0.55),
-    0 0 60px -10px color-mix(in oklab, var(--accent) 70%, transparent);
+    0 24px 50px -20px color-mix(in oklab, var(--accent) 80%, transparent),
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent);
 }
 .line-card:hover::after { opacity: 1; transform: translateX(30%); }
 .line-card.is-locked {
-  opacity: 0.78;
+  opacity: 0.7;
 }
 .line-card.is-locked:hover { transform: translateY(-3px); }
 
 .line-card-content { position: relative; z-index: 2; display: contents; }
 
-/* Splash */
-@keyframes splashStroke {
-  from { stroke-dashoffset: var(--len, 600); opacity: 0; }
-  60%  { opacity: 1; }
-  to   { stroke-dashoffset: 0; opacity: 1; }
+/* =========================================================
+ * Cinematic Splash Gateway
+ * Black void → orange-gold portal → logo sweep → title.
+ * ========================================================= */
+
+.splash-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse at center, #1a0a04 0%, #0a0604 55%, #000 100%);
+  cursor: pointer;
+  overflow: hidden;
+  animation: splashFadeIn 700ms ease-out both;
 }
-@keyframes splashFadeOut {
-  to { opacity: 0; transform: scale(1.04); }
+.splash-root.is-leaving { animation: splashFadeOut 700ms ease-in forwards; }
+
+@keyframes splashFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes splashFadeOut { to   { opacity: 0; transform: scale(1.04); } }
+@keyframes fadeInPage    { from { opacity: 0; } to { opacity: 1; } }
+.fade-in-page { animation: fadeInPage 600ms ease-out both; }
+
+/* Volumetric rays */
+.splash-rays {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 170, 60, 0.18), transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(220, 80, 30, 0.14), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.10), transparent 60%);
+  filter: blur(40px);
+  animation: raysDrift 18s ease-in-out infinite alternate;
+  pointer-events: none;
 }
-@keyframes splashFadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes glowPulse {
-  0%, 100% { filter: drop-shadow(0 0 6px currentColor); }
-  50%      { filter: drop-shadow(0 0 18px currentColor); }
+@keyframes raysDrift {
+  from { transform: translate(-2%, -2%) scale(1); }
+  to   { transform: translate(2%, 3%) scale(1.08); }
 }
 
-.splash-stroke {
-  fill: none;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-dasharray: var(--len, 600);
-  stroke-dashoffset: var(--len, 600);
-  animation: splashStroke 1.4s cubic-bezier(.2,.7,.2,1) forwards;
+/* Gateway rings */
+.splash-gateway {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(82vmin, 720px);
+  height: min(82vmin, 720px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  animation: gatewayIn 2s ease-out 1.6s forwards;
+}
+@keyframes gatewayIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 180, 80, 0.25);
+  box-shadow:
+    0 0 60px rgba(255, 140, 40, 0.25) inset,
+    0 0 80px rgba(255, 140, 40, 0.18);
+}
+.ring-1 {
+  background: conic-gradient(from 0deg, transparent 0 60%, rgba(255, 180, 80, 0.45) 70%, transparent 80%);
+  -webkit-mask: radial-gradient(circle, transparent 48%, black 49%, black 50%, transparent 51%);
+          mask: radial-gradient(circle, transparent 48%, black 49%, black 50%, transparent 51%);
+  animation: spin 22s linear infinite;
+}
+.ring-2 {
+  inset: 10%;
+  border-color: rgba(255, 140, 40, 0.35);
+  background: conic-gradient(from 180deg, transparent 0 50%, rgba(255, 200, 100, 0.55) 65%, transparent 78%);
+  -webkit-mask: radial-gradient(circle, transparent 47%, black 48%, black 51%, transparent 52%);
+          mask: radial-gradient(circle, transparent 47%, black 48%, black 51%, transparent 52%);
+  animation: spin 14s linear infinite reverse;
+}
+.ring-3 {
+  inset: 22%;
+  border-color: rgba(255, 220, 140, 0.4);
+  background: conic-gradient(from 90deg, transparent 0 55%, rgba(255, 230, 160, 0.6) 70%, transparent 82%);
+  -webkit-mask: radial-gradient(circle, transparent 44%, black 45%, black 52%, transparent 53%);
+          mask: radial-gradient(circle, transparent 44%, black 45%, black 52%, transparent 53%);
+  animation: spin 9s linear infinite;
+}
+.ring-4 {
+  inset: 34%;
+  border-color: rgba(255, 240, 200, 0.5);
+  box-shadow:
+    0 0 30px rgba(255, 180, 80, 0.55) inset,
+    0 0 50px rgba(255, 140, 40, 0.5);
+  animation: ringBreathe 4s ease-in-out infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes ringBreathe {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.04); }
 }
 
-.fade-in-page { animation: splashFadeIn 600ms ease-out both; }
-.fade-out-splash { animation: splashFadeOut 600ms ease-in forwards; }
+.ring-pulse {
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 180, 80, 0.6);
+  animation: ringPulse 3.4s ease-out infinite;
+}
+.ring-pulse.delay-2 { animation-delay: 1.7s; }
+@keyframes ringPulse {
+  0%   { transform: scale(0.8); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Particles */
+.splash-particles { position: absolute; inset: 0; pointer-events: none; }
+.spark {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd27a 0%, rgba(255, 180, 80, 0.6) 50%, transparent 80%);
+  box-shadow: 0 0 6px rgba(255, 180, 80, 0.8);
+  opacity: 0;
+  animation: sparkDrift 6s ease-in-out infinite;
+}
+@keyframes sparkDrift {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.6); }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-30px) scale(1.1); }
+}
+
+/* Center stack */
+.splash-stack {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  padding: 0 24px;
+}
+.splash-logo-wrap {
+  position: relative;
+  width: clamp(120px, 22vmin, 200px);
+  height: clamp(120px, 22vmin, 200px);
+  opacity: 0;
+  animation: logoIn 1.8s ease-out 3.8s forwards;
+  filter: drop-shadow(0 0 24px rgba(255, 180, 80, 0.6));
+}
+.splash-logo { width: 100%; height: 100%; }
+@keyframes logoIn {
+  from { opacity: 0; transform: scale(0.85); filter: drop-shadow(0 0 0 rgba(255, 180, 80, 0)); }
+  to   { opacity: 1; transform: scale(1);    filter: drop-shadow(0 0 24px rgba(255, 180, 80, 0.6)); }
+}
+.splash-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 240, 200, 0.55) 50%, transparent 65%);
+  mix-blend-mode: screen;
+  animation: sheenSweep 4s ease-in-out 4.5s infinite;
+  pointer-events: none;
+  -webkit-mask: radial-gradient(circle, black 60%, transparent 70%);
+          mask: radial-gradient(circle, black 60%, transparent 70%);
+}
+@keyframes sheenSweep {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+.splash-title {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(20px, 3.2vmin, 34px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #ffe9b8;
+  text-shadow: 0 0 12px rgba(255, 170, 60, 0.6), 0 0 30px rgba(255, 120, 40, 0.35);
+  opacity: 0;
+  animation: titleIn 1.2s ease-out 6s forwards;
+}
+@keyframes titleIn {
+  from { opacity: 0; transform: translateY(12px) letter-spacing(0.3em); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.splash-hint {
+  position: absolute;
+  bottom: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(255, 220, 170, 0.7);
+  text-shadow: 0 0 8px rgba(255, 170, 60, 0.5);
+  animation: hintPulse 2s ease-in-out infinite;
+}
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
 
 /* Status dot */
 @keyframes liveDot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
@@ -321,16 +542,15 @@ body {
 .line-card .scanline {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--accent) 18%, transparent), transparent);
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--accent) 14%, transparent), transparent);
   height: 30%;
   pointer-events: none;
   animation: scanline 6s linear infinite;
   z-index: 1;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .splash-stroke { animation: none; stroke-dashoffset: 0; }
-  .line-card .scanline { animation: none; opacity: 0; }
+  .splash-root *, .line-card .scanline, .dmrc-mark { animation: none !important; }
   .line-card:hover { transform: none; }
 }
