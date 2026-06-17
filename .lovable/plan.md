@@ -1,15 +1,14 @@
-## Adjust Watermark for Premium Background + Strong Contrast
+## Replace side-panel CSS stripes with your uploaded metro-station photo
 
-### What
-Tweak the DMRC watermark so it feels more premium and present without reducing text readability on cards and the dashboard.
-
-### Changes
-
-1. **Opacity bump** — raise `.dmrc-watermark` opacity from `0.06` to `0.10` so the mark is subtly more visible against the cream background.
-
-2. **Soft blur on the image** — add `filter: blur(2px) brightness(1.15)` to the watermark `img` rule. This diffuses edges so the logo melts into the background rather than competing with foreground text, while the slight brightness lift keeps it from feeling muddy.
-
-3. **Preserve text contrast** — watermark stays at `z-index: 0` behind all content, so no foreground text or card elements are affected.
+### What we'll do
+1. **Upload your image to the Lovable CDN** via `lovable-assets` so it gets a stable asset URL.
+2. **Switch `.dmrc-side` CSS** from the current repeating-stripe / gradient background to the uploaded photograph, using:
+   - `background-image: url(...)`
+   - `background-size: cover`
+   - `background-position: center`
+   - `filter: saturate(0.85) brightness(1.05)` — very light desaturation so the blue/cream tones feel premium rather than garish.
+3. **Preserve the fade masks** so each edge dissolves smoothly into the cream page background.
+4. **Mirror the right panel** (CSS `transform: scaleX(-1)`) so the two sides feel balanced.
 
 ### Result
-The watermark becomes a refined, ghosted texture instead of an almost-invisible trace, while remaining fully behind every card, header, and label.
+Both fixed side panels become tall, cinematic metro-station art panels that blend softly into the cream background without hurting readability of the card grid.
