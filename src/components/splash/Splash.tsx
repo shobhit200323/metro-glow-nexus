@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DmrcMark } from "@/components/common/DmrcMark";
 import { DmrcLogo } from "@/components/common/DmrcLogo";
 
@@ -16,6 +16,7 @@ type Props = { onDone: () => void };
 export function Splash({ onDone }: Props) {
   const [leaving, setLeaving] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const leavingRef = useRef(false);
 
   // particle positions, stable per mount
   const particles = useMemo(
@@ -36,28 +37,37 @@ export function Splash({ onDone }: Props) {
     return () => clearTimeout(t);
   }, []);
 
-  const dismiss = () => {
-    if (leaving) return;
-    setLeaving(true);
-    setTimeout(onDone, 700);
-  };
-
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") dismiss();
+    const dismiss = () => {
+      if (leavingRef.current) return;
+      leavingRef.current = true;
+      setLeaving(true);
+      window.setTimeout(onDone, 700);
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        dismiss();
+      }
+    };
+    const onPointer = () => dismiss();
+    window.addEventListener("keydown", onKey, true);
+    window.addEventListener("pointerdown", onPointer, true);
+    window.addEventListener("touchstart", onPointer, { capture: true, passive: true });
+    window.addEventListener("mousedown", onPointer, true);
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      window.removeEventListener("pointerdown", onPointer, true);
+      window.removeEventListener("touchstart", onPointer, true);
+      window.removeEventListener("mousedown", onPointer, true);
+    };
+  }, [onDone]);
 
   return (
     <div
       className={`splash-root ${leaving ? "is-leaving" : ""}`}
       role="button"
       tabIndex={0}
-      onClick={dismiss}
-      onPointerDown={dismiss}
       aria-label="Enter DMRC Trip Finder"
     >
       {/* volumetric rays */}
