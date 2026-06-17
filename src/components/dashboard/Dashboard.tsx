@@ -19,6 +19,7 @@ import { LineCard } from "./LineCard";
 import { Clock } from "./Clock";
 import { DmrcMark } from "@/components/common/DmrcMark";
 import { DmrcLogo } from "@/components/common/DmrcLogo";
+import watermarkAsset from "@/assets/dmrc-watermark.png.asset.json";
 
 type Filter = "all" | "active" | "soon";
 const ORDER_KEY = "dmrc-line-order";
