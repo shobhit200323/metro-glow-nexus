@@ -425,7 +425,7 @@ body {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(ellipse at center, #1a0a04 0%, #0a0604 55%, #000 100%);
+    radial-gradient(ellipse at center, #0a1a30 0%, #050a18 55%, #000 100%);
   cursor: pointer;
   overflow: hidden;
   animation: splashFadeIn 700ms ease-out both;
@@ -442,9 +442,9 @@ body {
   position: absolute;
   inset: -20%;
   background:
-    radial-gradient(circle at 30% 40%, rgba(255, 170, 60, 0.18), transparent 40%),
-    radial-gradient(circle at 70% 60%, rgba(220, 80, 30, 0.14), transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.10), transparent 60%);
+    radial-gradient(circle at 30% 40%, rgba(0, 200, 255, 0.18), transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(0, 102, 255, 0.14), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(174, 240, 255, 0.10), transparent 60%);
   filter: blur(40px);
   animation: raysDrift 18s ease-in-out infinite alternate;
   pointer-events: none;
@@ -474,39 +474,40 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(255, 180, 80, 0.25);
+  border: 1px solid rgba(0, 200, 255, 0.25);
   box-shadow:
-    0 0 60px rgba(255, 140, 40, 0.25) inset,
-    0 0 80px rgba(255, 140, 40, 0.18);
+    0 0 60px rgba(0, 102, 255, 0.25) inset,
+    0 0 80px rgba(0, 102, 255, 0.18);
+  pointer-events: none;
 }
 .ring-1 {
-  background: conic-gradient(from 0deg, transparent 0 60%, rgba(255, 180, 80, 0.45) 70%, transparent 80%);
+  background: conic-gradient(from 0deg, transparent 0 60%, rgba(0, 200, 255, 0.45) 70%, transparent 80%);
   -webkit-mask: radial-gradient(circle, transparent 48%, black 49%, black 50%, transparent 51%);
           mask: radial-gradient(circle, transparent 48%, black 49%, black 50%, transparent 51%);
   animation: spin 22s linear infinite;
 }
 .ring-2 {
   inset: 10%;
-  border-color: rgba(255, 140, 40, 0.35);
-  background: conic-gradient(from 180deg, transparent 0 50%, rgba(255, 200, 100, 0.55) 65%, transparent 78%);
+  border-color: rgba(0, 102, 255, 0.35);
+  background: conic-gradient(from 180deg, transparent 0 50%, rgba(0, 200, 255, 0.55) 65%, transparent 78%);
   -webkit-mask: radial-gradient(circle, transparent 47%, black 48%, black 51%, transparent 52%);
           mask: radial-gradient(circle, transparent 47%, black 48%, black 51%, transparent 52%);
   animation: spin 14s linear infinite reverse;
 }
 .ring-3 {
   inset: 22%;
-  border-color: rgba(255, 220, 140, 0.4);
-  background: conic-gradient(from 90deg, transparent 0 55%, rgba(255, 230, 160, 0.6) 70%, transparent 82%);
+  border-color: rgba(174, 240, 255, 0.4);
+  background: conic-gradient(from 90deg, transparent 0 55%, rgba(174, 240, 255, 0.6) 70%, transparent 82%);
   -webkit-mask: radial-gradient(circle, transparent 44%, black 45%, black 52%, transparent 53%);
           mask: radial-gradient(circle, transparent 44%, black 45%, black 52%, transparent 53%);
   animation: spin 9s linear infinite;
 }
 .ring-4 {
   inset: 34%;
-  border-color: rgba(255, 240, 200, 0.5);
+  border-color: rgba(220, 245, 255, 0.5);
   box-shadow:
-    0 0 30px rgba(255, 180, 80, 0.55) inset,
-    0 0 50px rgba(255, 140, 40, 0.5);
+    0 0 30px rgba(0, 200, 255, 0.55) inset,
+    0 0 50px rgba(0, 102, 255, 0.5);
   animation: ringBreathe 4s ease-in-out infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -519,8 +520,9 @@ body {
   position: absolute;
   inset: 34%;
   border-radius: 50%;
-  border: 2px solid rgba(255, 180, 80, 0.6);
+  border: 2px solid rgba(0, 200, 255, 0.6);
   animation: ringPulse 3.4s ease-out infinite;
+  pointer-events: none;
 }
 .ring-pulse.delay-2 { animation-delay: 1.7s; }
 @keyframes ringPulse {
@@ -533,10 +535,11 @@ body {
 .spark {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffd27a 0%, rgba(255, 180, 80, 0.6) 50%, transparent 80%);
-  box-shadow: 0 0 6px rgba(255, 180, 80, 0.8);
+  background: radial-gradient(circle, #aef0ff 0%, rgba(0, 200, 255, 0.6) 50%, transparent 80%);
+  box-shadow: 0 0 6px rgba(0, 200, 255, 0.8);
   opacity: 0;
   animation: sparkDrift 6s ease-in-out infinite;
+  pointer-events: none;
 }
 @keyframes sparkDrift {
   0%   { opacity: 0; transform: translateY(10px) scale(0.6); }
@@ -555,6 +558,7 @@ body {
   gap: 28px;
   text-align: center;
   padding: 0 24px;
+  pointer-events: none;
 }
 .splash-logo-wrap {
   position: relative;
@@ -562,18 +566,18 @@ body {
   height: clamp(120px, 22vmin, 200px);
   opacity: 0;
   animation: logoIn 1.8s ease-out 3.8s forwards;
-  filter: drop-shadow(0 0 24px rgba(255, 180, 80, 0.6));
+  filter: drop-shadow(0 0 24px rgba(0, 200, 255, 0.6));
 }
 .splash-logo { width: 100%; height: 100%; }
 @keyframes logoIn {
-  from { opacity: 0; transform: scale(0.85); filter: drop-shadow(0 0 0 rgba(255, 180, 80, 0)); }
-  to   { opacity: 1; transform: scale(1);    filter: drop-shadow(0 0 24px rgba(255, 180, 80, 0.6)); }
+  from { opacity: 0; transform: scale(0.85); filter: drop-shadow(0 0 0 rgba(0, 200, 255, 0)); }
+  to   { opacity: 1; transform: scale(1);    filter: drop-shadow(0 0 24px rgba(0, 200, 255, 0.6)); }
 }
 .splash-sheen {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: linear-gradient(110deg, transparent 35%, rgba(255, 240, 200, 0.55) 50%, transparent 65%);
+  background: linear-gradient(110deg, transparent 35%, rgba(220, 240, 255, 0.55) 50%, transparent 65%);
   mix-blend-mode: screen;
   animation: sheenSweep 4s ease-in-out 4.5s infinite;
   pointer-events: none;
@@ -592,8 +596,8 @@ body {
   font-size: clamp(20px, 3.2vmin, 34px);
   font-weight: 600;
   letter-spacing: 0.12em;
-  color: #ffe9b8;
-  text-shadow: 0 0 12px rgba(255, 170, 60, 0.6), 0 0 30px rgba(255, 120, 40, 0.35);
+  color: #d8f2ff;
+  text-shadow: 0 0 12px rgba(0, 200, 255, 0.6), 0 0 30px rgba(0, 102, 255, 0.35);
   opacity: 0;
   animation: titleIn 1.2s ease-out 6s forwards;
 }
@@ -611,9 +615,10 @@ body {
   font-size: 11px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(255, 220, 170, 0.7);
-  text-shadow: 0 0 8px rgba(255, 170, 60, 0.5);
+  color: rgba(190, 230, 255, 0.8);
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
   animation: hintPulse 2s ease-in-out infinite;
+  pointer-events: none;
 }
 @keyframes hintPulse {
   0%, 100% { opacity: 0.5; }
