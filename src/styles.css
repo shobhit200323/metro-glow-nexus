@@ -262,10 +262,14 @@ body {
   place-items: center;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.06;
+  opacity: 0.1;
 }
 .dmrc-watermark svg,
-.dmrc-watermark img { width: min(60vw, 600px); height: auto; }
+.dmrc-watermark img {
+  width: min(60vw, 600px);
+  height: auto;
+  filter: blur(2px) brightness(1.15);
+}
 
 /* Filter bar (light glass) */
 .dmrc-filterbar {
