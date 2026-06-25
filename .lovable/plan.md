@@ -1,28 +1,82 @@
-## Splash page fixes
+## Goal
 
-### 1. Click-to-skip not working
-Add a robust dismiss handler so taps/clicks on any inner element reliably exit the splash:
-- Bind `onPointerDown` (in addition to `onClick`) on `.splash-root` — fires immediately on touch, before any scroll/synthetic-click swallowing.
-- Force `pointer-events: none` on all decorative layers (`.splash-rays`, `.splash-gateway`, `.ring`, `.ring-pulse`, `.splash-particles`, `.spark`, `.splash-sheen`, `.splash-logo-wrap img`) so clicks always bubble to the root.
-- Set `.splash-stack { pointer-events: none; }` (it's purely visual).
-- Keep keyboard Escape/Enter/Space handler.
+Create a brand-new `/redline` route that mirrors the layout of the uploaded `redline.html` but in the Cyber-Cream aesthetic. UI-only — no admin console, no charts, no backend wiring. Existing splash and `/` dashboard untouched.
 
-### 2. Recolor animation: golden → cyan / electric blue
-Palette: `#0a1430` deep base, `#0066ff` primary, `#00c8ff` accent, `#aef0ff` highlight.
+## Color & Type tokens (added to `src/styles.css`)
 
-Replace every warm/amber color in the splash CSS block (lines 421–621 of `src/styles.css`):
-- `.splash-root` background → radial `#0a1a30 → #050a18 → #000`.
-- `.splash-rays` → blue/cyan radial blooms (`rgba(0,200,255,.18)`, `rgba(0,102,255,.14)`, `rgba(174,240,255,.10)`).
-- `.ring*` borders, conic gradients, and box-shadows → cyan/blue tones (`rgba(0,200,255,…)`, `rgba(0,102,255,…)`, `rgba(174,240,255,…)`).
-- `.ring-pulse` border → `rgba(0,200,255,0.6)`.
-- `.spark` gradient + glow → cyan (`#aef0ff → rgba(0,200,255,.6)`), shadow `rgba(0,200,255,.8)`.
-- `.splash-logo-wrap` and `logoIn` drop-shadow → `rgba(0,200,255,.6)`.
-- `.splash-sheen` → cool white-blue tint (`rgba(220,240,255,.55)`).
-- `.splash-title` color `#d8f2ff`, text-shadow blue glow (`rgba(0,200,255,.6)`, `rgba(0,102,255,.35)`).
-- `.splash-hint` color/shadow → cyan tones.
+- `--cream-bg: #FDFBF7` — page background
+- `--cream-panel: #F5EFEB` — card / panel base
+- `--signal-red: #FF3B3B` — bright accent (buttons, highlights, focus ring)
+- `--dark-red: #8B0000` — headings, borders, hover/active states
+- `--champagne: #C5A059` — subtle gold dividers / metadata
+- `--ink: #2A1A1A` — body text on cream
+- `--font-display: "Syncopate", sans-serif` (titles)
+- `--font-ui: "Rajdhani", sans-serif` (body / inputs)
 
-No structural/animation timing changes — only colors and pointer-events.
+Fonts loaded via `<link>` in `src/routes/__root.tsx` head (Syncopate + Rajdhani). No `@import` in CSS.
 
-### Files touched
-- `src/components/splash/Splash.tsx` — add `onPointerDown={dismiss}`.
-- `src/styles.css` — recolor splash block + pointer-events on decorative layers.
+Glass card utility (`.cream-card`): `background: rgba(253,251,247,0.65)`, `backdrop-filter: blur(18px) saturate(140%)`, `border: 1px solid rgba(139,0,0,0.18)`, `box-shadow: 0 10px 40px -10px rgba(255,59,59,0.25)`. Focus ring uses `--signal-red` glow.
+
+## Files
+
+**New:**
+- `src/routes/redline.tsx` — route + `head()` metadata (title "DMRC Red Line | Trip Finder", description, og tags)
+- `src/components/redline/RedlinePage.tsx` — page composition + modal state
+- `src/components/redline/RedlineHeader.tsx` — DMRC logo, "DMRC LINE 1 TRIP FINDER" title in Syncopate dark-red, "SHADARA Crew Control" subtitle, live date/time widget on right, status pill ("⚡ SYSTEM ONLINE"), small "LOGIN" pill button (opens modal)
+- `src/components/redline/TripFinderCard.tsx` — central cream glass card with Day Type `<select>` (Weekday/Saturday/Sunday/Special, auto-set today), Duty Number input, "ACCESS DUTY DATA" primary button (signal-red bg, dark-red hover). On submit → fills sample results into the table below.
+- `src/components/redline/ResultsTable.tsx` — data-matrix table inside cream glass card: columns Duty / Start / End / Route / Hours / Status. Sample/static rows. Responsive: collapses to stacked cards on mobile (<640px).
+- `src/components/redline/AuthModal.tsx` — toggleable overlay (Login ↔ Register tabs), frosted backdrop `rgba(45,15,15,0.55)`, cream glass card, inputs styled with dark-red borders + signal-red focus, eye-toggle password. Submit handlers are no-ops (UI only).
+
+**Modified:**
+- `src/styles.css` — append cyber-cream tokens, `.cream-card`, `.cream-input`, `.cream-btn-primary`, `.cream-btn-ghost`, `.status-bar` keyframe shimmer
+- `src/routes/__root.tsx` — add Syncopate + Rajdhani `<link>` tags
+
+## Page structure
+
+```text
+┌─ Header ──────────────────────────────────────────────┐
+│  [DMRC logo]  DMRC LINE 1 TRIP FINDER     14:32:08    │
+│               SHADARA Crew Control        Wed 25 Jun  │
+│                                          [👤 LOGIN]   │
+├───────────────────────────────────────────────────────┤
+│  ⚡ SYSTEM ONLINE • SAFETY FIRST • SERVICE ALWAYS ⚡  │
+├───────────────────────────────────────────────────────┤
+│            ┌──────── TRIP Finder ────────┐            │
+│            │  Day Type [Weekday ▾]       │            │
+│            │  Duty No  [_________]       │            │
+│            │  [🔍 ACCESS DUTY DATA]      │            │
+│            └─────────────────────────────┘            │
+│                                                       │
+│  ┌─ Duty Schedule ─────────────────────────────────┐  │
+│  │ Duty │ Start │ End  │ Route       │ Hrs │ Stat │  │
+│  │ 101  │ 05:30 │ 14:00│ RITHALA→SHA │ 8.5 │ ON   │  │
+│  │ ...                                            │  │
+│  └────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────┘
+
+[AuthModal overlay — Login / Register tabs when open]
+```
+
+## DMRC logo
+
+Reuse the existing DMRC logo asset already in the project (located via `src/assets/`). If multiple candidates exist I'll use the one already imported by the main dashboard.
+
+## Out of scope (per "UI only, simplified")
+
+- No admin console, messages, visitor stats, chart canvases
+- No real auth — submit buttons just close the modal
+- No real duty data — table uses 5 hard-coded sample rows
+- No KM analysis, no popup modal, no logout flow
+- No changes to splash, `/`, or any other existing route
+
+## Responsive
+
+Mobile-first. Header collapses to stacked rows <640px. Trip Finder card full-width with 16px padding. Results table → stacked card view on mobile (each row becomes a mini cream card with label/value pairs).
+
+## Acceptance
+
+- Navigate to `/redline` → cyber-cream themed Red Line Trip Finder page renders
+- Submit trip finder → results table populates with sample data
+- Click LOGIN pill → modal overlay opens, tab between Login/Register, close with ✕
+- Looks correct on mobile and desktop
+- No console errors; existing routes still work
