@@ -78,7 +78,12 @@ export function Dashboard() {
 
   const launch = (line: Line) => {
     if (!line.url) return;
-    window.open(line.url, "_blank", "noopener,noreferrer");
+    const isInternal = line.url.startsWith("/") && !line.url.endsWith(".html");
+    if (isInternal) {
+      window.location.assign(line.url);
+    } else {
+      window.open(line.url, "_blank", "noopener,noreferrer");
+    }
   };
 
   // Keyboard shortcuts 1-6
