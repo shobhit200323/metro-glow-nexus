@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { DmrcLogo } from "@/components/common/DmrcLogo";
 
-function useClock() {
-  const [now, setNow] = useState(() => new Date());
+function useClientClock() {
+  const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -11,9 +12,9 @@ function useClock() {
 }
 
 export function RedlineHeader({ onLoginClick }: { onLoginClick: () => void }) {
-  const now = useClock();
-  const time = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-  const date = now.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
+  const now = useClientClock();
+  const time = now ? now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "--:--:--";
+  const date = now ? now.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" }) : "";
 
   return (
     <header className="cream-header">
