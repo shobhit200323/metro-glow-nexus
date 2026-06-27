@@ -24,7 +24,7 @@ export const LINES: Line[] = [
     stations: "21 Stations · 34.6 km",
     accent: "var(--line-red)",
     accentDeep: "var(--line-red-deep)",
-    url: "/lines/redline.html",
+    url: "/redline",
     active: true,
     key: "1",
     persona: "Holographic / Web-Slinger",
