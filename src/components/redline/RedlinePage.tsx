@@ -3,6 +3,7 @@ import { RedlineHeader } from "./RedlineHeader";
 import { TripFinderCard } from "./TripFinderCard";
 import { ResultsTable, type DutyRow } from "./ResultsTable";
 import { AuthModal } from "./AuthModal";
+import { DmrcLogo } from "@/components/common/DmrcLogo";
 
 const SAMPLE_ROWS: DutyRow[] = [
   { duty: "101", start: "05:30", end: "14:00", route: "RITHALA → SHAHEED STHAL", hours: "8.5", status: "ON DUTY" },
@@ -20,6 +21,9 @@ export function RedlinePage() {
     <div className="cream-root">
       <div className="dmrc-side dmrc-side-left" aria-hidden />
       <div className="dmrc-side dmrc-side-right" aria-hidden />
+      <div className="dmrc-watermark" aria-hidden>
+        <DmrcLogo />
+      </div>
       <RedlineHeader onLoginClick={() => setAuthOpen(true)} />
       <div className="cream-status-bar">
         ⚡ SYSTEM ONLINE • SAFETY FIRST • SERVICE ALWAYS • SHADARA CREW CONTROL ⚡
