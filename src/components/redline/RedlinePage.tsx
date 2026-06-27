@@ -18,6 +18,8 @@ export function RedlinePage() {
 
   return (
     <div className="cream-root">
+      <div className="dmrc-side dmrc-side-left" aria-hidden />
+      <div className="dmrc-side dmrc-side-right" aria-hidden />
       <RedlineHeader onLoginClick={() => setAuthOpen(true)} />
       <div className="cream-status-bar">
         ⚡ SYSTEM ONLINE • SAFETY FIRST • SERVICE ALWAYS • SHADARA CREW CONTROL ⚡
