@@ -846,6 +846,7 @@ body {
   display: block;
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 2px;
   color: rgba(139, 0, 0, 0.75);
   text-transform: uppercase;
@@ -855,6 +856,7 @@ body {
   width: 100%;
   font-family: var(--font-ui);
   font-size: 15px;
+  font-weight: 700;
   color: var(--ink);
   padding: 12px 14px;
   background: #fff;
