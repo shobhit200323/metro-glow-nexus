@@ -822,7 +822,7 @@ body {
 .cream-card {
   background: rgba(253, 251, 247, 0.7);
   backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(139, 0, 0, 0.18);
+  border: 2px solid rgba(139, 0, 0, 0.32);
   border-radius: 18px;
   padding: 24px;
   box-shadow:
