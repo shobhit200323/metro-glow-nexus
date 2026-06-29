@@ -914,10 +914,12 @@ body {
   border-spacing: 0;
   font-family: var(--font-ui);
   font-size: 14px;
+  font-weight: 700;
 }
 .cream-table thead th {
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--dark-red);
@@ -930,6 +932,7 @@ body {
   padding: 12px 14px;
   border-bottom: 1px solid rgba(139, 0, 0, 0.08);
   color: var(--ink);
+  font-weight: 700;
 }
 .cream-table tbody tr:hover td { background: rgba(255, 59, 59, 0.05); }
 
@@ -937,6 +940,7 @@ body {
   display: inline-block;
   font-family: var(--font-display);
   font-size: 9px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   padding: 4px 10px;
   border-radius: 999px;
