@@ -1007,7 +1007,7 @@ body {
   .cream-table, .cream-table tbody, .cream-table tr, .cream-table td { display: block; width: 100%; }
   .cream-table tr {
     margin-bottom: 12px;
-    border: 1px solid rgba(139, 0, 0, 0.15);
+    border: 2px solid rgba(139, 0, 0, 0.22);
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.6);
@@ -1016,11 +1016,13 @@ body {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 14px;
     border-bottom: 1px solid rgba(139, 0, 0, 0.06);
+    font-weight: 700;
   }
   .cream-table tbody td::before {
     content: attr(data-label);
     font-family: var(--font-display);
     font-size: 10px;
+    font-weight: 800;
     letter-spacing: 1.5px;
     color: var(--dark-red);
     text-transform: uppercase;
