@@ -985,6 +985,7 @@ body {
   flex: 1;
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   padding: 10px;
   background: transparent;
