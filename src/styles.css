@@ -701,6 +701,18 @@ body {
   color: var(--ink);
   font-family: var(--font-ui);
   padding-bottom: 60px;
+  font-weight: 700;
+}
+
+/* Redline watermark: larger, slightly more visible DMRC logo behind content */
+.cream-root .dmrc-watermark {
+  opacity: 0.18;
+  z-index: 0;
+}
+.cream-root .dmrc-watermark img,
+.cream-root .dmrc-watermark svg {
+  width: min(70vw, 720px);
+  filter: blur(1.5px) brightness(1.25);
 }
 
 .cream-header {
@@ -744,7 +756,7 @@ body {
   font-family: var(--font-ui);
   font-size: 13px;
   letter-spacing: 3px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--champagne);
   text-transform: uppercase;
   margin-top: 4px;
@@ -753,7 +765,7 @@ body {
 .cream-clock { text-align: right; line-height: 1.2; }
 .cream-time {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 900;
   font-size: 16px;
   color: var(--signal-red);
   letter-spacing: 1px;
@@ -763,10 +775,12 @@ body {
   letter-spacing: 1.5px;
   color: rgba(42, 26, 26, 0.7);
   text-transform: uppercase;
+  font-weight: 800;
 }
 .cream-login-pill {
   font-family: var(--font-display);
   font-size: 11px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   padding: 9px 16px;
   border-radius: 999px;
@@ -783,6 +797,7 @@ body {
   text-align: center;
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 3px;
   padding: 8px 12px;
   color: #fff;
@@ -807,7 +822,7 @@ body {
 .cream-card {
   background: rgba(253, 251, 247, 0.7);
   backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(139, 0, 0, 0.18);
+  border: 2px solid rgba(139, 0, 0, 0.32);
   border-radius: 18px;
   padding: 24px;
   box-shadow:
@@ -831,6 +846,7 @@ body {
   display: block;
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 2px;
   color: rgba(139, 0, 0, 0.75);
   text-transform: uppercase;
@@ -840,6 +856,7 @@ body {
   width: 100%;
   font-family: var(--font-ui);
   font-size: 15px;
+  font-weight: 700;
   color: var(--ink);
   padding: 12px 14px;
   background: #fff;
@@ -871,6 +888,7 @@ body {
 .cream-btn {
   font-family: var(--font-display);
   font-size: 12px;
+  font-weight: 800;
   letter-spacing: 2px;
   padding: 13px 22px;
   border-radius: 10px;
@@ -896,10 +914,12 @@ body {
   border-spacing: 0;
   font-family: var(--font-ui);
   font-size: 14px;
+  font-weight: 700;
 }
 .cream-table thead th {
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--dark-red);
@@ -912,6 +932,7 @@ body {
   padding: 12px 14px;
   border-bottom: 1px solid rgba(139, 0, 0, 0.08);
   color: var(--ink);
+  font-weight: 700;
 }
 .cream-table tbody tr:hover td { background: rgba(255, 59, 59, 0.05); }
 
@@ -919,6 +940,7 @@ body {
   display: inline-block;
   font-family: var(--font-display);
   font-size: 9px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   padding: 4px 10px;
   border-radius: 999px;
@@ -963,6 +985,7 @@ body {
   flex: 1;
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   padding: 10px;
   background: transparent;
@@ -984,7 +1007,7 @@ body {
   .cream-table, .cream-table tbody, .cream-table tr, .cream-table td { display: block; width: 100%; }
   .cream-table tr {
     margin-bottom: 12px;
-    border: 1px solid rgba(139, 0, 0, 0.15);
+    border: 2px solid rgba(139, 0, 0, 0.22);
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.6);
@@ -993,11 +1016,13 @@ body {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 14px;
     border-bottom: 1px solid rgba(139, 0, 0, 0.06);
+    font-weight: 700;
   }
   .cream-table tbody td::before {
     content: attr(data-label);
     font-family: var(--font-display);
     font-size: 10px;
+    font-weight: 800;
     letter-spacing: 1.5px;
     color: var(--dark-red);
     text-transform: uppercase;
