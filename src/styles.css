@@ -888,6 +888,7 @@ body {
 .cream-btn {
   font-family: var(--font-display);
   font-size: 12px;
+  font-weight: 800;
   letter-spacing: 2px;
   padding: 13px 22px;
   border-radius: 10px;
